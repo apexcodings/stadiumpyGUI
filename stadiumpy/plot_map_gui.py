@@ -4,11 +4,11 @@ from tkinter import ttk
 # from tkinter import *
 from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y, VERTICAL, RIDGE, GROOVE
 
-from plot_geomap import plot_map
+from stadiumpy.plot_geomap import plot_map
 from PIL import ImageTk, Image
 import os
 from tkinter import messagebox
-
+import stadiumpy as stpy
 
 
 def display_image(self,image_name, RELXS, RELY, RELHEIGHT, RELWIDTH): 
@@ -204,7 +204,8 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     
 
 
-    coordFile = "regioninfo.npy"
+    coordFile = os.path.join(stpy.__path__[0], 'regioninfo.npy')
+    # coordFile = "regioninfo.npy"
     geoCoords = np.load(coordFile)
     minlat, maxlat, minlon, maxlon = [geoCoords[i] for i in range(4)]
     if not os.path.exists(image_name):

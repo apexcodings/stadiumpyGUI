@@ -3,10 +3,10 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y, VERTICAL, RIDGE, GROOVE
 
-from plot_geomap import plot_map
+from stadiumpy.plot_geomap import plot_map
 from PIL import ImageTk, Image
 # from stadiumpy_gui import PageGeoRegion
-from plot_map_gui import plotMap
+from stadiumpy.plot_map_gui import plotMap
 import os
 # from stadiumpy_gui import mapImage
 

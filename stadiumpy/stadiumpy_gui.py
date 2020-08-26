@@ -5,20 +5,28 @@ import yaml, os
 from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y
 from tkinter.ttk import Frame, Button, Style
 import numpy as np
-from startpage import startview
-from prf_page import prfview
-from srf_page import srfview
-from dataenquirypage import dataenquiry
-from sks_page import sksview
-from page_control import PageControl
-from plot_map_gui import plotMap
+from stadiumpy.startpage import startview
+from stadiumpy.prf_page import prfview
+from stadiumpy.srf_page import srfview
+from stadiumpy.dataenquirypage import dataenquiry
+from stadiumpy.sks_page import sksview
+from stadiumpy.page_control import PageControl
+from stadiumpy.plot_map_gui import plotMap
+import stadiumpy as stpy
 
-
-image_name = ".stadiumpyCache/region-plot.png"
+cachedirec=".cache"
+if not os.path.exists(cachedirec):
+    os.makedirs(cachedirec, exist_ok=True)
+    
+image_name = os.path.join('.cache', 'region-plot.png')
+# image_name = ".stadiumpyCache/region-plot.png"
 # image_name = "region-plot.png"
 
 # read inputYAML
-with open('input_file.yaml') as f:
+
+inp_file_yaml = os.path.join(stpy.__path__[0], 'settings', 'input_file.yaml')
+# inp_file_yaml = 'settings/input_file.yaml'
+with open(inp_file_yaml) as f:
     inp = yaml.load(f, Loader=yaml.FullLoader)
 
 print(inp)
