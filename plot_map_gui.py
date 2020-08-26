@@ -2,7 +2,7 @@ import numpy as np
 import tkinter as tk
 from tkinter import ttk
 # from tkinter import *
-from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y, VERTICAL
+from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y, VERTICAL, RIDGE, GROOVE
 
 from plot_geomap import plot_map
 from PIL import ImageTk, Image
@@ -76,7 +76,7 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
 
     topcanvas = tk.Canvas(self)
     topcanvas.config(bg='#ecebec')
-    topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=4.8*RELHEIGHT )
+    topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
     ## Startpage page
     PageDataEnquiry_stpg_button = ttk.Button(self, text="Start Page",style = 'W.TButton',
@@ -126,6 +126,7 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     
 
     RELY += 0.01
+    RELYmapwidth = RELY
     lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT*3, relwidth=RELWIDTH)
 
     geoMaxLatEntry = ttk.Entry(self, width=10)
@@ -143,17 +144,55 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
 
     geoMinLonEntry.insert(0,str(minlon))
     geoMaxLonEntry.insert(0,str(maxlon))
-    plotmapRELY = RELY
+    
 
     ##
     RELY += RELHEIGHT+0.01
     geoMinLatEntry = ttk.Entry(self, width=10)
     geoMinLatEntry.insert(0,str(minlat))
     geoMinLatEntry.place(relx=RELXS[3]/2, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+
+    ## dropdown menu for res
+    resSel = tk.StringVar()
+    resSel.set("intermediate")
+    res_drop = tk.OptionMenu(self,resSel, "full", "high", "intermediate", "low", "crude")
+
+    RELY += RELHEIGHT+0.01
+    reslabel = ttk.Label(self, text="CoastRes:", relief=RIDGE)
+    reslabel.configure(anchor="center")
+    reslabel.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+    res_drop.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
     
     ##
-    res='i'
-    topo_data = '@earth_relief_01m'
+    resDict = {"full":"f", "high":"h", "intermediate": "i", "low": "l", "crude": "c"}
+    res=resDict[resSel.get()]
+
+    ## dropdown menu for topography
+    RELY += RELHEIGHT+0.01
+    topoSel = tk.StringVar()
+    topoOptions = ['01d', '30m', '20m', '15m', '10m', '06m', '05m', '04m', '03m', '02m', '01m', '30s', '15s']
+    topoSel.set(topoOptions[10])
+    topo_drop = tk.OptionMenu(self,topoSel, *topoOptions)
+
+    topolabel = ttk.Label(self, text="ReliefRes:", relief=RIDGE)
+    topolabel.configure(anchor="center")
+    topolabel.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+    topo_drop.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+    
+    ##
+    topo_data="@earth_relief_" + topoSel.get()
+
+    plotmapRELY = RELY
+
+
+    mapwidthLabel = ttk.Label(self, text="MapWidth:", relief=RIDGE)
+    mapwidthLabel.configure(anchor="center")
+    mapwidthLabel.place(relx=RELXS[3], rely=RELYmapwidth, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+    mapWidth = ttk.Entry(self, width=10)
+    mapWidth.insert(0,"5c")
+    mapWidth.place(relx=RELXS[3]+RELWIDTH/2, rely=RELYmapwidth, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+    # res='i'
+    # topo_data = '@earth_relief_01m'
 
     # canvasRELXS = RELXS
     # canvasRELY = RELY
@@ -207,7 +246,7 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
             # canvas = tk.Canvas(self, width = geoMap.width(), height = geoMap.height(), relief=SUNKEN, bd=2)
             canvas.create_image(0, 0, anchor="nw", image=geoMap) 
             canvas.image = geoMap
-            canvas.grid(row=3,column=0, pady=(200,10), padx=10, sticky="nsew")
+            canvas.grid(row=3,column=0, pady=(260,10), padx=10, sticky="nsew")
             # canvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH )
         else:
             canvas=None
@@ -215,14 +254,17 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     canvas = image_on_canvas(image_name)
 
     def refreshMap(canvas):
+        res=resDict[resSel.get()]
+        topo_data="@earth_relief_" + topoSel.get()
+        mapwidth = mapWidth.get()
         minlat = geoMinLatEntry.get()
         maxlat = geoMaxLatEntry.get()
         minlon = geoMinLonEntry.get()
         maxlon = geoMaxLonEntry.get()
-        plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile=image_name,res=res)
+        plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile=image_name,res=res, width=mapwidth)
         canvas.delete("all")
         canvas = image_on_canvas(image_name)
 
 
     button_plotmap = ttk.Button(self, text="RefreshMap", command=lambda: refreshMap(canvas))
-    button_plotmap.place(relx=RELXS[3], rely=plotmapRELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
+    button_plotmap.place(relx=RELXS[4], rely=plotmapRELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
