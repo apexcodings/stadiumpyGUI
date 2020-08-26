@@ -9,7 +9,7 @@ res='i'
 #define etopo data file
 topo_data = '@earth_relief_01m' #30 arc second global relief (SRTM15+V2.1 @ 1.0 km)
 
-def plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile,res='i', width="5c"):
+def plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile,res='i', width="5c", frame="f"):
     print(f"Plotting map for {minlon},{maxlon},{minlat},{maxlat}")
     fig = pygmt.Figure()
 
@@ -26,7 +26,7 @@ def plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile,res='i', width="5
         region=[minlon, maxlon, minlat, maxlat], 
         projection='M'+width,
         shading=True,
-        frame="f"
+        frame=frame
         )
 
     fig.coast( region=[minlon, maxlon, minlat, maxlat],

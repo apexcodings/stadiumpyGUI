@@ -7,6 +7,7 @@ from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y,
 from plot_geomap import plot_map
 from PIL import ImageTk, Image
 import os
+from tkinter import messagebox
 
 
 
@@ -191,13 +192,18 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     mapWidth = ttk.Entry(self, width=10)
     mapWidth.insert(0,"5c")
     mapWidth.place(relx=RELXS[3]+RELWIDTH/2, rely=RELYmapwidth, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
-    # res='i'
-    # topo_data = '@earth_relief_01m'
+    
+    ##mapframe
+    RELYmapframe = RELYmapwidth+RELHEIGHT+0.01
+    mapframeLabel = ttk.Label(self, text="MapFrame:", relief=RIDGE)
+    mapframeLabel.configure(anchor="center")
+    mapframeLabel.place(relx=RELXS[3], rely=RELYmapframe, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+    mapFrame = ttk.Entry(self, width=10)
+    mapFrame.insert(0,"f")
+    mapFrame.place(relx=RELXS[3]+RELWIDTH/2, rely=RELYmapframe, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+    
 
-    # canvasRELXS = RELXS
-    # canvasRELY = RELY
-    # canvasRELHEIGHT = RELHEIGHT
-    # canvasRELWIDTH = RELWIDTH
+
     coordFile = "regioninfo.npy"
     geoCoords = np.load(coordFile)
     minlat, maxlat, minlon, maxlon = [geoCoords[i] for i in range(4)]
@@ -257,12 +263,16 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
         res=resDict[resSel.get()]
         topo_data="@earth_relief_" + topoSel.get()
         mapwidth = mapWidth.get()
+        mapframe = mapFrame.get()
         minlat = geoMinLatEntry.get()
         maxlat = geoMaxLatEntry.get()
         minlon = geoMinLonEntry.get()
         maxlon = geoMaxLonEntry.get()
-        plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile=image_name,res=res, width=mapwidth)
-        canvas.delete("all")
+        try:
+            plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile=image_name,res=res, width=mapwidth, frame=mapframe)
+            canvas.delete("all")
+        except:
+            messagebox.showwarning("Illegal Input","Please check the inputs")
         canvas = image_on_canvas(image_name)
 
 
