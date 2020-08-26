@@ -1,0 +1,16 @@
+# PARAMETERS: VALUES
+project_name: Simple_RFSKS_test/
+
+fresh_start: 0 #1 to delete the previous computations
+
+summary_file: summary_file.txt
+
+makeRF: 1
+makeSRF: 1
+makeSKS: 1
+
+##  Define the geographical region
+mnlong: 0 #minimum longitude
+mxlong: 20 #maximum longitude
+mnlat: 45 #minimum latitude
+mxlat: 60 #maximum latitude
