@@ -9,6 +9,7 @@ from PIL import ImageTk, Image
 import os
 from tkinter import messagebox
 import stadiumpy as stpy
+from tkmacosx import SFrame, Button
 
 
 def display_image(self,image_name, RELXS, RELY, RELHEIGHT, RELWIDTH): 
@@ -48,27 +49,31 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     # main_frame.pack(fill=BOTH, expand=1)
 
     ## create a canvas
-    my_canvas = tk.Canvas(self)
-    my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+    # my_canvas = tk.Canvas(self)
+    # my_canvas.pack(side=LEFT, fill=BOTH, expand=1, pady=(50,0))
 
-    ## Scrollbar
-    my_scrollbar = ttk.Scrollbar(self, orient=VERTICAL, command=my_canvas.yview)
-    my_scrollbar.pack(side=RIGHT, fill=Y)
+    # ## Scrollbar
+    # my_scrollbar = ttk.Scrollbar(self, orient=VERTICAL, command=my_canvas.yview)
+    # my_scrollbar.pack(side=RIGHT, fill=Y)
 
-    ## configure the canvas
-    my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    my_canvas.bind('<Configure>',lambda e: my_canvas.configure(scrollregion = my_canvas.bbox("all")))
+    # ## configure the canvas
+    # my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    # my_canvas.bind('<Configure>',lambda e: my_canvas.configure(scrollregion = my_canvas.bbox("all")))
 
-    ## Another frame inside canvas
-    second_frame = tk.Frame(my_canvas)
+    # ## Another frame inside canvas
+    # second_frame = tk.Frame(my_canvas)
 
-    # add new frame to the window in the canvas
-    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
+    # # add new frame to the window in the canvas
+    # my_canvas.create_window((0,0), window=second_frame, anchor="nw")
+    main_frame = SFrame(self)
+    main_frame.pack(fill=BOTH, expand=1)
+
+    second_frame = SFrame(main_frame, scrollbarwidth=10,height=600)
+    second_frame.pack(pady=20,side=LEFT, fill=BOTH, expand=1, anchor="nw")
 
 
 
 
-    # minlat, maxlat, minlon, maxlon = [geoCoords[i] for i in range(4)]
     RELY = 0
     RELHEIGHT, RELWIDTH = 0.05, 0.2
     RELXS = np.linspace(0,1,6)
@@ -204,10 +209,10 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     
 
 
-    coordFile = os.path.join(stpy.__path__[0], 'regioninfo.npy')
-    # coordFile = "regioninfo.npy"
-    geoCoords = np.load(coordFile)
-    minlat, maxlat, minlon, maxlon = [geoCoords[i] for i in range(4)]
+    # coordFile = os.path.join(stpy.__path__[0], 'regioninfo.npy')
+    # # coordFile = "regioninfo.npy"
+    # geoCoords = np.load(coordFile)
+    # minlat, maxlat, minlon, maxlon = [geoCoords[i] for i in range(4)]
     if not os.path.exists(image_name):
         plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile=image_name,res=res)
 

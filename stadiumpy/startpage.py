@@ -13,24 +13,7 @@ import os
 
 
 def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, PageGeoRegion, inp, image_name):
-    ## create a canvas
-    my_canvas = tk.Canvas(self)
-    my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
-
-    ## Scrollbar
-    my_scrollbar = ttk.Scrollbar(self, orient=VERTICAL, command=my_canvas.yview)
-    my_scrollbar.pack(side=RIGHT, fill=Y)
-
-    ## configure the canvas
-    my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    my_canvas.bind('<Configure>',lambda e: my_canvas.configure(scrollregion = my_canvas.bbox("all")))
-
-    ## Another frame inside canvas
-    second_frame = tk.Frame(my_canvas)
-
-    # add new frame to the window in the canvas
-    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-
+    
 
 
     RELY = 0
@@ -72,12 +55,12 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     RELY0 = RELY
     ## Mode
-    def toggle_mode(mode):
-        
-        if mode.config('text')[-1] == 'Automated':
-            mode.config(text='Stepwise')
+    def toggle_mode():
+        # print(button_mode['text'])
+        if button_mode['text'] == 'Automated':
+            button_mode['text'] ='Stepwise'
         else:
-            mode.config(text='Automated')
+            button_mode['text'] = 'Automated'
 
     lbl1 = ttk.Label(self, text="Mode:")
     lbl1.configure(anchor="center")
@@ -85,7 +68,8 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
     lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
     stad_mode = "Automated"
-    button_mode = ttk.Button(self, text=stad_mode, command=lambda: toggle_mode(button_mode))
+    button_mode = ttk.Button(self, text=stad_mode, command=toggle_mode)
+
     button_mode.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
 
@@ -130,10 +114,10 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     def toggle_button(button_freshstart):
         
-        if button_freshstart.config('text')[-1] == 'True':
-            button_freshstart.config(text='False')
+        if button_freshstart['text'] == 'True':
+            button_freshstart['text']='False'
         else:
-            button_freshstart.config(text='True')
+            button_freshstart['text']='True'
 
 
     RELY = RELY0

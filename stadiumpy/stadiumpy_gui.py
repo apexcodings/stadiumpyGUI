@@ -17,7 +17,7 @@ import stadiumpy as stpy
 cachedirec=".cache"
 if not os.path.exists(cachedirec):
     os.makedirs(cachedirec, exist_ok=True)
-    
+
 image_name = os.path.join('.cache', 'region-plot.png')
 # image_name = ".stadiumpyCache/region-plot.png"
 # image_name = "region-plot.png"
@@ -77,7 +77,7 @@ class stadiumpy(tk.Tk):
 
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-
+            
         self.show_frame(StartPage)
 
 
