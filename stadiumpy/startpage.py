@@ -13,8 +13,18 @@ import stadiumpy as stpy
 
 from stadiumpy.widgets import SFrame, Button
 
+from stadiumpy.top_buttons import display_main_buttons
+
 def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, PageGeoRegion, inp, image_name):
     
+    main_frame = tk.Frame(self)
+    main_frame.pack(fill=BOTH, expand=1)
+
+    second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
+    # second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
+    second_frame.pack(pady=20,side=LEFT, fill=BOTH, expand=1, anchor="nw")
+
+
     RELY = 0
     RELHEIGHT, RELWIDTH = 0.05, 0.2
     RELXS = np.linspace(0,1,6)
@@ -23,33 +33,10 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     topcanvas = tk.Canvas(self)
     topcanvas.config(bg='#ecebec')
-    topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=9*RELHEIGHT )
-
-    ## Startpage page
-    stpg_button = ttk.Button(self, text="Start Page",
-                        command=lambda: controller.show_frame(StartPage), style = 'W.TButton',state="disabled")
-    stpg_button.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+    topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
 
-    ## Data enquiry page
-    button4 = ttk.Button(self, text="Data Enquiry",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PageDataEnquiry))
-    button4.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-    
-    ## RF page
-    button = ttk.Button(self, text="P-RF Parameters",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PagePRF))
-    button.place(relx=RELXS[2], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-    ## RF page
-    button = ttk.Button(self, text="S-RF Parameters",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PageSRF))
-    button.place(relx=RELXS[3], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-    ## SKS page
-    button2 = ttk.Button(self, text="SKS Parameters",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PageSKS))
-    button2.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=0)
 
     button_options_red = {'bg':'#E69A8D', 
                 "fg":'#5F4B8B', 
@@ -297,3 +284,11 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
     RELY += RELHEIGHT+0.01
     button_plotmap = ttk.Button(self, text="ExploreMap", command=showMap)
     button_plotmap.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
+    print(RELHEIGHT)
+
+    RELY += RELHEIGHT+0.01
+    listbox = tk.Listbox(self)
+    listbox.place(relx=RELXS[0], rely=RELY, relheight=13*RELHEIGHT, relwidth=5*RELWIDTH)
+    for jj in range(500):
+        listbox.insert(0, f"test {jj}")
+        # listbox.insert(tk.END, f"test {jj}")

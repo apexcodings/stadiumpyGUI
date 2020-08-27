@@ -10,7 +10,7 @@ res='i'
 topo_data = '@earth_relief_01m' #30 arc second global relief (SRTM15+V2.1 @ 1.0 km)
 
 def plot_map(minlon,maxlon,minlat, maxlat,topo_data,outputfile,res='i', width="8c", frame="f"):
-    print(f"Plotting map for {minlon},{maxlon},{minlat},{maxlat}")
+    # print(f"Plotting map for {minlon},{maxlon},{minlat},{maxlat}")
     fig = pygmt.Figure()
 
     # make color pallets

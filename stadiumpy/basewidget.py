@@ -130,11 +130,11 @@ def _on_press_color(cls=None, cnf={}, **kw):
     if cond1 and cond2 and cond3 and not kw.get('force_create', False):
         return
     cls.cnf['activebackground'] = kw.get('color', cls.cnf.get(
-        'activebackground', ("#4b91fe", "#055be5")))
+        'activebackground', ("#505966", "#505966")))
     cls.delete(tag)
     ids = []
     # This is the default color for mac
-    cr = kw.get('color', ("#4b91fe", "#055be5"))
+    cr = kw.get('color', ("#505966", "#505966"))
     if isinstance(cr, (tuple, list)):
         if None in cr:
             cr = list(cr)

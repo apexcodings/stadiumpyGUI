@@ -26,11 +26,14 @@ image_name = os.path.join('.cache', 'region-plot.png')
 # read inputYAML
 
 inp_file_yaml = os.path.join(stpy.__path__[0], 'settings', 'input_file.yaml')
+adv_prf_yaml = os.path.join(stpy.__path__[0], 'settings', 'advancedRF.yaml')
 # inp_file_yaml = 'settings/input_file.yaml'
 with open(inp_file_yaml) as f:
     inp = yaml.load(f, Loader=yaml.FullLoader)
 
-print(inp)
+with open(adv_prf_yaml) as f:
+    adv_prf = yaml.load(f, Loader=yaml.FullLoader)
+
 
 class stadiumpy(tk.Tk):
 
@@ -108,7 +111,7 @@ class PagePRF(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp)
+        prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, adv_prf)
 
 
 

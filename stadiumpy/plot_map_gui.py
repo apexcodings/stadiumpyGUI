@@ -13,9 +13,10 @@ import stadiumpy as stpy
 from stadiumpy.widgets import SFrame, Button
 # from tkmacosx import SFrame, Button
 
+from stadiumpy.top_buttons import display_main_buttons
 
 def display_image(self,image_name, RELXS, RELY, RELHEIGHT, RELWIDTH): 
-    print("Running display_image in plot_map_gui")           
+    # print("Running display_image in plot_map_gui")           
     geoMap_read = Image.open(image_name)
     maxheight = 300
 
@@ -28,7 +29,7 @@ def display_image(self,image_name, RELXS, RELY, RELHEIGHT, RELWIDTH):
     # geoMap_read = geoMap_read.resize((maxwidth,hsize), Image.ANTIALIAS)
 
     geoMap = ImageTk.PhotoImage(geoMap_read)
-    print("width-height:",width, height)
+    # print("width-height:",width, height)
  
     RELY += RELHEIGHT+0.01
         
@@ -44,36 +45,14 @@ def startpagebtn(controller, StartPage):
     controller.show_frame(StartPage)
 
 def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp, image_name):
-    print("Running plotMap function in plot_map_gui")
+    # print("Running plotMap function in plot_map_gui")
 
-    # ## create main frame
-    # main_frame = tk.Frame(self)
-    # main_frame.pack(fill=BOTH, expand=1)
-
-    ## create a canvas
-    # my_canvas = tk.Canvas(self)
-    # my_canvas.pack(side=LEFT, fill=BOTH, expand=1, pady=(50,0))
-
-    # ## Scrollbar
-    # my_scrollbar = ttk.Scrollbar(self, orient=VERTICAL, command=my_canvas.yview)
-    # my_scrollbar.pack(side=RIGHT, fill=Y)
-
-    # ## configure the canvas
-    # my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    # my_canvas.bind('<Configure>',lambda e: my_canvas.configure(scrollregion = my_canvas.bbox("all")))
-
-    # ## Another frame inside canvas
-    # second_frame = tk.Frame(my_canvas)
-
-    # # add new frame to the window in the canvas
-    # my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-    main_frame = SFrame(self)
+    main_frame = tk.Frame(self)
     main_frame.pack(fill=BOTH, expand=1)
 
-    second_frame = SFrame(main_frame, scrollbarwidth=10,height=600)
+    second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
+    # second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
     second_frame.pack(pady=20,side=LEFT, fill=BOTH, expand=1, anchor="nw")
-
-
 
 
     RELY = 0
@@ -86,36 +65,8 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     topcanvas.config(bg='#ecebec')
     topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
-    ## Startpage page
-    PageDataEnquiry_stpg_button = ttk.Button(self, text="Start Page",style = 'W.TButton',
-                        command=lambda: controller.show_frame(StartPage))
-    RELX1 = RELWIDTH+0.02
-    PageDataEnquiry_stpg_button.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=None)
 
-
-    ## Data enquiry page
-    button4 = ttk.Button(self, text="Data Enquiry",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PageDataEnquiry))
-    RELX1 = RELWIDTH+0.02
-    button4.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-    
-    ## RF page
-    button = ttk.Button(self, text="P-RF Parameters",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PagePRF))
-    RELX1 += RELWIDTH+0.01
-    button.place(relx=RELXS[2], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-    ## RF page
-    button = ttk.Button(self, text="S-RF Parameters",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PageSRF))
-    RELX1 += RELWIDTH+0.01
-    button.place(relx=RELXS[3], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-    ## SKS page
-    button2 = ttk.Button(self, text="SKS Parameters",style = 'W.TButton',
-                        command=lambda: controller.show_frame(PageSKS))
-    RELX1 += RELWIDTH+0.01
-    button2.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
 
     #Geographic Region
@@ -220,14 +171,14 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
 
 
     def read_map(image_name):        
-        print("Running display_image in plot_map_gui")   
+        # print("Running display_image in plot_map_gui")   
         # bkimg_read = Image.open(background_image)
         geoMap_read = Image.open(image_name)
-        maxheight = 450
+        # maxheight = 450
         maxwidth = 720
 
         width, height = geoMap_read.size
-        print("width-height from readmap",width, height)
+        # print("width-height from readmap",width, height)
         # if width>maxwidth:
         #     wpercent = (maxwidth/float(geoMap_read.size[0]))
         #     hsize = int((float(geoMap_read.size[1])*float(wpercent)))
@@ -248,7 +199,7 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
         # bkimg = ImageTk.PhotoImage(bkimg_read)
 
         geoMap = ImageTk.PhotoImage(geoMap_read)
-        print("width-height:",width, height)
+        # print("width-height:",width, height)
         return geoMap
  
     RELY += RELHEIGHT+0.01
