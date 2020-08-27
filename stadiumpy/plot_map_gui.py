@@ -9,7 +9,9 @@ from PIL import ImageTk, Image
 import os
 from tkinter import messagebox
 import stadiumpy as stpy
-from tkmacosx import SFrame, Button
+# from .tkmacosx import tkmacosx
+from stadiumpy.widgets import SFrame, Button
+# from tkmacosx import SFrame, Button
 
 
 def display_image(self,image_name, RELXS, RELY, RELHEIGHT, RELWIDTH): 

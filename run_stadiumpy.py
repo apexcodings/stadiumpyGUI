@@ -1,2 +1,2 @@
-from stadiumpy import stadiumpy_gui
-
+from stadiumpy import stadiumpy
+# import stadiumpy

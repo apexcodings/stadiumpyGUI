@@ -9,13 +9,12 @@ from PIL import ImageTk, Image
 from stadiumpy.plot_map_gui import plotMap
 import os
 # from stadiumpy_gui import mapImage
+import stadiumpy as stpy
 
-from tkmacosx import Button
+from stadiumpy.widgets import SFrame, Button
 
 def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, PageGeoRegion, inp, image_name):
     
-
-
     RELY = 0
     RELHEIGHT, RELWIDTH = 0.05, 0.2
     RELXS = np.linspace(0,1,6)
