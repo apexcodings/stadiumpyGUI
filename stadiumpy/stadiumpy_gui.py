@@ -77,7 +77,7 @@ class stadiumpy(tk.Tk):
 
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-            
+
         self.show_frame(StartPage)
 
 
@@ -141,9 +141,6 @@ class PageGeoRegion(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        # image_name = "region-plot.png"
-        # Tk.update(self)
-        # sksview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp)
         plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp, image_name)
         
 

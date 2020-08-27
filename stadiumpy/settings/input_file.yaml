@@ -1,5 +1,6 @@
 # PARAMETERS: VALUES
 project_name: Simple_RFSKS_test/
+mode: Automated
 
 fresh_start: 0 #1 to delete the previous computations
 

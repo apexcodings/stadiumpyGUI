@@ -10,7 +10,7 @@ from stadiumpy.plot_map_gui import plotMap
 import os
 # from stadiumpy_gui import mapImage
 
-
+from tkmacosx import Button
 
 def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, PageGeoRegion, inp, image_name):
     
@@ -52,23 +52,43 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
                         command=lambda: controller.show_frame(PageSKS))
     button2.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
+    button_options_red = {'bg':'#E69A8D', 
+                "fg":'#5F4B8B', 
+                "borderless":1,
+                'activebackground':('#AE0E36', '#D32E5E')
+                }
+    button_options_green = {
+                "bg":'#ADEFD1', 
+                "fg":'#00203F', 
+                "borderless":1,
+                'activebackground':('#AE0E36', '#D32E5E')
+                }
 
     RELY0 = RELY
     ## Mode
     def toggle_mode():
-        # print(button_mode['text'])
         if button_mode['text'] == 'Automated':
-            button_mode['text'] ='Stepwise'
+            dictAdd = {'text':'Stepwise', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
+            for key, value in dictAdd.items():
+                button_mode[key]=value
         else:
-            button_mode['text'] = 'Automated'
+            dictAdd = {'text':'Automated', 'bg':'#ADEFD1', 'fg': '#00203F'}
+            for key, value in dictAdd.items():
+                button_mode[key]=value
 
     lbl1 = ttk.Label(self, text="Mode:")
     lbl1.configure(anchor="center")
     RELY += RELHEIGHT+0.01 
     lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
-    stad_mode = "Automated"
-    button_mode = ttk.Button(self, text=stad_mode, command=toggle_mode)
+    if inp['mode']=="Automated":
+        stad_mode = "Automated"
+        button_options = button_options_green
+    else:
+        stad_mode = "Stepwise"
+        button_options = button_options_red
+
+    button_mode = Button(self, text=stad_mode, command=toggle_mode, **button_options)
 
     button_mode.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
@@ -82,12 +102,31 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     if not inp['fresh_start']:
         frsttext = "False"
+        button_options = button_options_red
     else:
         frsttext = "True"
+        button_options = button_options_green
     
-    button_freshstart = ttk.Button(self, text=frsttext,command=lambda: toggle_button(button_freshstart))
+
+
+    button_freshstart = Button(self, 
+            text=frsttext,
+            command=lambda: toggle_button(button_freshstart),
+            **button_options
+            )
+    # button_freshstart = ttk.Button(self, text=frsttext,command=lambda: toggle_button(button_freshstart))
+
     button_freshstart.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-    # button_freshstart.place(relx=RELXS[3]+2*(RELXS[3]-RELXS[2])/2+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+    def toggle_button(button_freshstart):
+        if button_freshstart['text'] == 'True':
+            dictAdd = {'text':'False', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
+            for key, value in dictAdd.items():
+                button_freshstart[key]=value
+        else:
+            dictAdd = {'text':'True', 'bg':'#ADEFD1', 'fg': '#00203F'}
+            for key, value in dictAdd.items():
+                button_freshstart[key]=value
 
 
     ## Project name
@@ -112,12 +151,6 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
     entry1.insert(0,inp['summary_file'])
 
 
-    def toggle_button(button_freshstart):
-        
-        if button_freshstart['text'] == 'True':
-            button_freshstart['text']='False'
-        else:
-            button_freshstart['text']='True'
 
 
     RELY = RELY0
@@ -136,10 +169,16 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
     
     if not inp['makeRF']:
         makeRFtext = "False"
+        button_options = button_options_red
     else:
         makeRFtext = "True"
+        button_options = button_options_green
 
-    button_makerf = ttk.Button(self, text=makeRFtext, command=lambda: toggle_button(button_makerf))
+    button_makerf = Button(self, 
+        text=makeRFtext, 
+        command=lambda: toggle_button(button_makerf),
+        **button_options
+        )
     button_makerf.place(relx=RELXS[2]+(RELXS[2]-RELXS[1])/2+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
     # makeRF-S
@@ -150,10 +189,17 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     if not inp['makeSRF']:
         makeSRFtext = "False"
+        button_options = button_options_red
     else:
         makeSRFtext = "True"
+        button_options = button_options_green
     
-    button_makesrf = ttk.Button(self, text=makeSRFtext, command=lambda: toggle_button(button_makesrf))
+    button_makesrf = Button(self, 
+        text=makeSRFtext, 
+        command=lambda: toggle_button(button_makesrf),
+        **button_options
+        )
+    # button_makesrf = ttk.Button(self, text=makeSRFtext, command=lambda: toggle_button(button_makesrf))
     button_makesrf.place(relx=RELXS[2]+(RELXS[3]-RELXS[2])/2+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
 
@@ -165,11 +211,17 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     if not inp['makeSKS']:
         makeSKStext = "False"
+        button_options = button_options_red
     else:
         makeSKStext = "True"
+        button_options = button_options_green
 
 
-    button_makesks = ttk.Button(self, text=makeSKStext, command=lambda: toggle_button(button_makesks))
+    button_makesks = Button(self, 
+        text=makeSKStext, 
+        command=lambda: toggle_button(button_makesks),
+        **button_options
+        )
     button_makesks.place(relx=RELXS[2]+(RELXS[3]-RELXS[2])/2+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
     #Geographic Region
