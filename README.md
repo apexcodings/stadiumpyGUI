@@ -4,6 +4,7 @@
 
 ![Map Explore](assets/mapexplorepage.jpg)
 
+![P-Receiver Functions Advanced Parameters](assets/pRFpage.jpg)
 ## Installation Steps
 
 - Create Environment
