@@ -31,3 +31,13 @@ def toggle_button(button):
         dictAdd = {'text':'True', 'bg':'#ADEFD1', 'fg': '#00203F'}
         for key, value in dictAdd.items():
             button[key]=value
+
+
+def button_init(hkappa_val):
+    if not hkappa_val:
+        frsttext = "False"
+        button_options = button_options_red
+    else:
+        frsttext = "True"
+        button_options = button_options_green
+    return frsttext, button_options

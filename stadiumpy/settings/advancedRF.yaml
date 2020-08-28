@@ -14,9 +14,9 @@ h_kappa_settings:
   plot_kappa: 1
 
 rf_profile_settings:
-  PRF_num_profile_lat: 1
-  PRF_num_profile_lon: 1
-  PRF_ppdepth: 40 #piercing points depth
+  numProfileLAT: 1
+  numProfileLON: 1
+  ppdepthKM: 40 #piercing points depth
 
 rf_event_search_settings:
   PRF_minradius: 30 #min radius from each station for events search
