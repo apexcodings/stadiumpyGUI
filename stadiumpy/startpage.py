@@ -12,8 +12,9 @@ import os
 import stadiumpy as stpy
 
 from stadiumpy.widgets import SFrame, Button
-
 from stadiumpy.top_buttons import display_main_buttons
+from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button
+
 
 def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, PageGeoRegion, inp, image_name):
     
@@ -38,29 +39,9 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=0)
 
-    button_options_red = {'bg':'#E69A8D', 
-                "fg":'#5F4B8B', 
-                "borderless":1,
-                'activebackground':('#AE0E36', '#D32E5E')
-                }
-    button_options_green = {
-                "bg":'#ADEFD1', 
-                "fg":'#00203F', 
-                "borderless":1,
-                'activebackground':('#AE0E36', '#D32E5E')
-                }
 
     RELY0 = RELY
     ## Mode
-    def toggle_mode():
-        if button_mode['text'] == 'Automated':
-            dictAdd = {'text':'Stepwise', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
-            for key, value in dictAdd.items():
-                button_mode[key]=value
-        else:
-            dictAdd = {'text':'Automated', 'bg':'#ADEFD1', 'fg': '#00203F'}
-            for key, value in dictAdd.items():
-                button_mode[key]=value
 
     lbl1 = ttk.Label(self, text="Mode:")
     lbl1.configure(anchor="center")
@@ -74,7 +55,7 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
         stad_mode = "Stepwise"
         button_options = button_options_red
 
-    button_mode = Button(self, text=stad_mode, command=toggle_mode, **button_options)
+    button_mode = Button(self, text=stad_mode, command=lambda: toggle_mode(button_mode), **button_options)
 
     button_mode.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
@@ -104,15 +85,6 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
 
     button_freshstart.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
-    def toggle_button(button_freshstart):
-        if button_freshstart['text'] == 'True':
-            dictAdd = {'text':'False', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
-            for key, value in dictAdd.items():
-                button_freshstart[key]=value
-        else:
-            dictAdd = {'text':'True', 'bg':'#ADEFD1', 'fg': '#00203F'}
-            for key, value in dictAdd.items():
-                button_freshstart[key]=value
 
 
     ## Project name

@@ -2,13 +2,14 @@ filenames:
   allStaXML: rf_stations.xml #station xml
   allStaTXT: all_stations_RF.txt #station text catalog
   allRetrStaTXT: all_stations_rf_retrieved.txt #retrived stations list file
-  PRF_data_suffix: rf_profile_data #rf data file name: {net}-{stn}-rf_profile_data.h5
-  PRF_events_map: RF-events_map #events map filename suffix {net}-{stn}-RF-events_map.png
-  PRF_station: RF_stations #retrieved stations prefix
-  PRF_suffix: rf_profile_rfs #rf computation result file name: network-station-rf_profile_rfs.h5
-  PRF_profile: rf_profile_profile #rf profile computation result file name: rf_profile_profile{azimuth}_*.h5
+  netStaDataH5_suf: rf_profile_data #rf data file name: {net}-{stn}-rf_profile_data.h5
+  netStaEntMapPNG: RF-events_map #events map filename suffix {net}-{stn}-RF-events_map.png
+  pref_retrSta: RF_stations #retrieved stations prefix
+  netStaCompOutH5_suf: rf_profile_rfs #rf computation result file name: network-station-rf_profile_rfs.h5
+  netStaProfileOutH5_suf: rf_profile_profile #rf profile computation result file name: rf_profile_profile{azimuth}_*.h5
+
 h_kappa_settings:
-  h_kappa_results: h-kappa-values.txt
+  hKappaResTXT: h-kappa-values.txt
   plot_h: 1
   plot_kappa: 1
 

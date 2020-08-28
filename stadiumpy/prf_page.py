@@ -7,11 +7,10 @@ from PIL import ImageTk, Image
 from stadiumpy.widgets import SFrame, Button
 
 from stadiumpy.top_buttons import display_main_buttons
+from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button
 
 def prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, adv_prf):
     
-    
-
 
     RELY = 0
     RELHEIGHT, RELWIDTH = 0.05, 0.2
@@ -28,8 +27,9 @@ def prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF,
 
 
 
+    labHeadOptions = {"font":('calibri', 16, 'bold')}
     ###########################################
-    lbl1 = ttk.Label(self, text="Filenames:")
+    lbl1 = ttk.Label(self, text="Filenames:", **labHeadOptions)
     lbl1.configure(anchor="center")
     RELY += RELHEIGHT+0.01 
     lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
@@ -39,25 +39,88 @@ def prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF,
     kk=0
 
     label_options = {"font":('calibri', 12, 'normal')}
-    drelx = (RELXS[2]-RELXS[1])/2
+    halfCellX = (RELXS[2]-RELXS[1])/2
     while kk<len(filename_vars):
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text=filename_vars[kk], **label_options)
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
         entry1 = ttk.Entry(self)
-        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+drelx)
+        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
         entry1.insert(0,filename_vals[kk])
         kk+=1
 
         ##
         lbl1 = ttk.Label(self, text=filename_vars[kk], **label_options)
-        lbl1.place(relx=RELXS[3]-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
         entry1 = ttk.Entry(self)
-        entry1.place(relx=RELXS[4]-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+drelx)
+        entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
         entry1.insert(0,filename_vals[kk])
         kk+=1
 
     ###########################################
+
+    lbl1 = ttk.Label(self, text=r'Crustal Thickness (h) - Vp/Vs (kappa)', **labHeadOptions)
+    lbl1.configure(anchor="center")
+    RELY += RELHEIGHT+0.01 
+    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+
+
+    ##
+    hkappa_vars = list(adv_prf['h_kappa_settings'].keys())
+    hkappa_vals = list(adv_prf['h_kappa_settings'].values())
+
+    RELY += RELHEIGHT+0.01 #new line
+    kk = 0
+    lbl1 = ttk.Label(self, text=hkappa_vars[kk], **label_options)
+    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+    entry1 = ttk.Entry(self)
+    entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+    entry1.insert(0,hkappa_vals[kk])
+
+    ##
+
+
+    kk+=1
+    lbl1 = ttk.Label(self, text=hkappa_vars[kk], **label_options)
+    lbl1.place(relx=RELXS[2]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+    if not hkappa_vals[kk]:
+        frsttext = "False"
+        button_options = button_options_red
+    else:
+        frsttext = "True"
+        button_options = button_options_green
+
+    button_hkappa1 = Button(self, 
+            text=frsttext,
+            command=lambda: toggle_button(button_hkappa1),
+            **button_options
+            )
+    button_hkappa1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+
+    kk+=1
+    lbl1 = ttk.Label(self, text=hkappa_vars[kk], **label_options)
+    lbl1.place(relx=RELXS[3]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+    # entry1 = ttk.Entry(self)
+    # entry1.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+    # entry1.insert(0,hkappa_vals[kk])
+    if not hkappa_vals[kk]:
+        frsttext = "False"
+        button_options = button_options_red
+    else:
+        frsttext = "True"
+        button_options = button_options_green
+
+    button_hkappa2 = Button(self, 
+            text=frsttext,
+            command=lambda: toggle_button(button_hkappa2),
+            **button_options
+            )
+    button_hkappa2.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
     
