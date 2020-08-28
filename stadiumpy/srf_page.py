@@ -9,7 +9,7 @@ from stadiumpy.widgets import SFrame, Button
 
 from stadiumpy.top_buttons import display_main_buttons
 
-def srfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp):
+def srfview(self, ttk, controller, StartPage, PageDataEnquiry, PageRF, PageSKS, inp):
     # print("PageSRF")
     RELY = 0
     RELHEIGHT, RELWIDTH = 0.05, 0.2
@@ -18,4 +18,4 @@ def srfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF,
     RELXS[1:]= RELXS[1:]+drelx
 
 
-    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=3)
+    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, disabledBtn=3)

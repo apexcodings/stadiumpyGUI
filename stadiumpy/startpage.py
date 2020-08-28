@@ -14,15 +14,15 @@ import stadiumpy as stpy
 from stadiumpy.widgets import SFrame, Button
 from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button
+# from stadiumpy.stadiumpy import pageArgs
 
 
-def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, PageGeoRegion, inp, image_name):
+def startview(self, ttk, parent, controller, inp, image_name, *pageArgs):
     
     main_frame = tk.Frame(self)
     main_frame.pack(fill=BOTH, expand=1)
 
     second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
-    # second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
     second_frame.pack(pady=20,side=LEFT, fill=BOTH, expand=1, anchor="nw")
 
 
@@ -37,7 +37,7 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
     topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
 
-    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=0)
+    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=0)
 
 
     RELY0 = RELY
@@ -224,34 +224,13 @@ def startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF
     
     
 
-    # minlat = geoMinLatEntry.get()
-    # maxlat = geoMaxLatEntry.get()
-    # minlon = geoMinLonEntry.get()
-    # maxlon = geoMaxLonEntry.get()
-    # geoCoords = np.array([minlat, maxlat, minlon, maxlon])
-    # coordFile = "regioninfo.npy"
-    # np.save(coordFile,geoCoords)
-
     if os.path.exists(image_name):
         os.remove(image_name)
 
 
 
     def showMap():
-        # minlat = geoMinLatEntry.get()
-        # maxlat = geoMaxLatEntry.get()
-        # minlon = geoMinLonEntry.get()
-        # maxlon = geoMaxLonEntry.get()
-        # res='i'
-        # topo_data = '@earth_relief_01m'
-        # geoCoords = np.array([minlat, maxlat, minlon, maxlon])
-        # coordFile = "regioninfo.npy"
-        # np.save(coordFile,geoCoords)
-        # print("geoCoords",geoCoords)
-        # plot_map(minlon,maxlon,minlat, maxlat,topo_data,res=res)
-        # pagegeo = PageGeoRegion(parent,controller)
-        # plotMap(pagegeo, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS)
-        controller.show_frame(PageGeoRegion)
+        controller.show_frame(pageArgs[5])
 
     RELY += RELHEIGHT+0.01
     button_plotmap = ttk.Button(self, text="ExploreMap", command=showMap)

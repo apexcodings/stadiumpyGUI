@@ -8,7 +8,7 @@ from stadiumpy.widgets import SFrame, Button
 
 from stadiumpy.top_buttons import display_main_buttons
 
-def sksview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp):
+def sksview(self, ttk, parent, controller, inp, *pageArgs):
     # print("PageSKS")
     RELY = 0
     RELHEIGHT, RELWIDTH = 0.05, 0.2
@@ -17,4 +17,4 @@ def sksview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF,
     RELXS[1:]= RELXS[1:]+drelx
 
 
-    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=4)
+    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=3)

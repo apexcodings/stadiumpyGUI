@@ -9,7 +9,7 @@ from stadiumpy.widgets import SFrame, Button
 from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init
 
-def prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, adv_prf):
+def prfview(self, ttk, parent, controller, adv_prf, *pageArgs):
     
 
     RELY = 0
@@ -22,7 +22,7 @@ def prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF,
     # topcanvas.config(bg='#ecebec')
     # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
-    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=2)
+    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
 
 
 
@@ -112,6 +112,49 @@ def prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF,
     ###########################################
 
     lbl1 = ttk.Label(self, text=r'RF Profile Configure', **labHeadOptions)
+    lbl1.configure(anchor="center")
+    RELY += RELHEIGHT+0.01 
+    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+
+
+    ##
+    hkappa_vars = list(adv_prf['rf_profile_settings'].keys())
+    hkappa_vals = list(adv_prf['rf_profile_settings'].values())
+
+    RELY += RELHEIGHT+0.01 #new line
+    kk = 0
+    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
+    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+    entry1 = ttk.Entry(self)
+    entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+    entry1.insert(0,hkappa_vals[kk])
+
+    ##
+
+    kk+=1
+    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
+    lbl1.place(relx=RELXS[1]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
+
+
+    entry1 = ttk.Entry(self)
+    entry1.insert(0,hkappa_vals[kk])
+    entry1.place(relx=RELXS[2]+drelx+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+
+    kk+=1
+    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
+    lbl1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
+
+
+    entry1 = ttk.Entry(self)
+    entry1.insert(0,hkappa_vals[kk])
+    entry1.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+
+    ###########################################
+
+    lbl1 = ttk.Label(self, text=r'Events Search', **labHeadOptions)
     lbl1.configure(anchor="center")
     RELY += RELHEIGHT+0.01 
     lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)

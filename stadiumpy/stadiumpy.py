@@ -10,10 +10,10 @@ from stadiumpy.prf_page import prfview
 from stadiumpy.srf_page import srfview
 from stadiumpy.dataenquirypage import dataenquiry
 from stadiumpy.sks_page import sksview
+from stadiumpy.results_summary_page import res_sum
 from stadiumpy.page_control import PageControl
 from stadiumpy.plot_map_gui import plotMap
-import stadiumpy as stpy
-
+import stadiumpy
 
 cachedirec=".cache"
 if not os.path.exists(cachedirec):
@@ -25,9 +25,10 @@ image_name = os.path.join('.cache', 'region-plot.png')
 
 # read inputYAML
 
-inp_file_yaml = os.path.join(stpy.__path__[0], 'settings', 'input_file.yaml')
-adv_prf_yaml = os.path.join(stpy.__path__[0], 'settings', 'advancedRF.yaml')
+inp_file_yaml = os.path.join(stadiumpy.__path__[0], 'settings', 'input_file.yaml')
+adv_prf_yaml = os.path.join(stadiumpy.__path__[0], 'settings', 'advancedRF.yaml')
 # inp_file_yaml = 'settings/input_file.yaml'
+
 with open(inp_file_yaml) as f:
     inp = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -75,7 +76,7 @@ class stadiumpy(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, PagePRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion):
+        for F in (StartPage, PageRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion, ResultsSummary):
 
             frame = F(container, self)
 
@@ -94,25 +95,24 @@ class stadiumpy(tk.Tk):
         root.quit()     # stops mainloop
         root.destroy()  # this is necessary on Windows to prevent
 
-
-        
+def pageArgsOut():
+    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion)
+    return pageArgs
 
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-        startview(self, ttk, parent, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, PageGeoRegion, inp, image_name)
+        startview(self, ttk, parent, controller, inp, image_name, *pageArgsOut())
+
         
 
-
-
 ## P - Receiver Functions
-class PagePRF(tk.Frame):
+class PageRF(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, adv_prf)
-
+        prfview(self, ttk, parent, controller, adv_prf, *pageArgsOut())
 
 
 
@@ -121,7 +121,7 @@ class PageSRF(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        srfview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp)
+        srfview(self, ttk, parent, controller, inp, *pageArgsOut())
         
 
 
@@ -129,7 +129,7 @@ class PageDataEnquiry(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        dataenquiry(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp)
+        dataenquiry(self, ttk, parent, controller, inp, *pageArgsOut())
         
 
     
@@ -138,14 +138,21 @@ class PageSKS(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        sksview(self, ttk, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp)
+        sksview(self, ttk, parent, controller, inp, *pageArgsOut())
 
 
 class PageGeoRegion(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp, image_name)
+        plotMap(self, ttk, parent, controller, inp, image_name, *pageArgsOut())
+        
+class ResultsSummary(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        res_sum(self, ttk, parent, controller, inp, *pageArgsOut())
+
         
 
 

@@ -1,32 +1,31 @@
 
 from stadiumpy.widgets import SFrame, Button
 
-def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=0):
+def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=0):
     topbuttons_options = {"borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised"}
     topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
-
     ## Startpage page
     stpg_button = Button(self, text="Home",
-                        command=lambda: controller.show_frame(StartPage))
+                        command=lambda: controller.show_frame(pageArgs[0]))
 
     ## Data enquiry page
     dataenquiry_btn = Button(self, text="Data Enquiry",
-                        command=lambda: controller.show_frame(PageDataEnquiry))
+                        command=lambda: controller.show_frame(pageArgs[1]))
 
     ## RF page
-    prf_button = Button(self, text="P-RF Parameters",
-                        command=lambda: controller.show_frame(PagePRF))
-
-    ## RF page
-    srf_button = Button(self, text="S-RF Parameters",
-                        command=lambda: controller.show_frame(PageSRF))
+    prf_button = Button(self, text="RF Parameters",
+                        command=lambda: controller.show_frame(pageArgs[2]))
 
     ## SKS page
     sks_button = Button(self, text="SKS Parameters",
-                        command=lambda: controller.show_frame(PageSKS))
+                        command=lambda: controller.show_frame(pageArgs[3]))
 
-    buttons = [stpg_button, dataenquiry_btn, prf_button, srf_button, sks_button]
-    for i in range(5):
+    ## 
+    ressum_button = Button(self, text="Results Summary",
+                        command=lambda: controller.show_frame(pageArgs[4]))
+
+    buttons = [stpg_button, dataenquiry_btn, prf_button, sks_button, ressum_button]
+    for i in range(len(buttons)):
         if i==disabledBtn:
             buttons[i].configure(**topbuttons_options_selected)
         else:

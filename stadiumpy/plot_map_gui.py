@@ -44,7 +44,7 @@ def startpagebtn(controller, StartPage):
     # canvas.delete("all")
     controller.show_frame(StartPage)
 
-def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, inp, image_name):
+def plotMap(self, ttk, parent, controller, inp, image_name, *pageArgs):
     # print("Running plotMap function in plot_map_gui")
 
     main_frame = tk.Frame(self)
@@ -65,7 +65,7 @@ def plotMap(self, controller, StartPage, PageDataEnquiry, PagePRF, PageSRF, Page
     topcanvas.config(bg='#ecebec')
     topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
-    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, StartPage, PageDataEnquiry, PagePRF, PageSRF, PageSKS, disabledBtn=None)
+    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=None)
 
 
 
