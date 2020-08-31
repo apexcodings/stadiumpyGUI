@@ -13,7 +13,7 @@ from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, button_options_nav, button_options_back
 
 
-def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
+def prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgs):
         RELY = 0
         RELHEIGHT, RELWIDTH = 0.05, 0.2
         RELXS = np.linspace(0,1,6)
@@ -52,33 +52,65 @@ def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
 
         ##########################################
 
-        lbl1 = ttk.Label(self, text=r'Events Search', **labHeadOptions, relief=RIDGE)
+        lbl1 = ttk.Label(self, text=r'Plot Settings', **labHeadOptions, relief=RIDGE)
         lbl1.configure(anchor="center")
         RELY += RELHEIGHT+0.01 
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
 
 
         ##
-        evsearch_vars = list(adv_prf['rf_event_search_settings'].keys())
-        evsearch_vals = list(adv_prf['rf_event_search_settings'].values())
+        display_vars = list(adv_prf['rf_display_settings'].keys())
+        display_vals = list(adv_prf['rf_display_settings'].values())
 
         kk=0
-        while kk<len(evsearch_vars):
+        while kk<len(display_vars):
                 RELY += RELHEIGHT+0.01 
-                lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
+                lbl1 = ttk.Label(self, text=display_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-                entry1.insert(0,evsearch_vals[kk])
+                entry1.insert(0,display_vals[kk])
                 kk+=1
 
                 ##
-                lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
+                lbl1 = ttk.Label(self, text=display_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-                entry1.insert(0,evsearch_vals[kk])
+                entry1.insert(0,display_vals[kk])
+                kk+=1
+        
+        
+        
+        ##
+        lbl1 = ttk.Label(self, text=r'Plot Filters', **labHeadOptions, relief=RIDGE)
+        lbl1.configure(anchor="center")
+        RELY += RELHEIGHT+0.01 
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+
+
+        plotting_vars = list(adv_prf['rf_plotting_settings'].keys())
+        plotting_vals = list(adv_prf['rf_plotting_settings'].values())
+
+        kk=0
+        while kk<len(plotting_vars):
+                RELY += RELHEIGHT+0.01 
+                lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+                entry1 = ttk.Entry(self)
+                entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+                entry1.insert(0,plotting_vals[kk])
+                kk+=1
+
+                ##
+                lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+                entry1 = ttk.Entry(self)
+                entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+                entry1.insert(0,plotting_vals[kk])
                 kk+=1
         

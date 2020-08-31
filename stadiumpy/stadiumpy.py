@@ -18,6 +18,8 @@ from stadiumpy.PRFpages.prf_filename import prf_filename
 from stadiumpy.PRFpages.prf_hkappa import prf_hkappa
 from stadiumpy.PRFpages.prf_profile_config import prf_profile_config
 from stadiumpy.PRFpages.prf_eventssearch import prf_eventssearch
+from stadiumpy.PRFpages.prf_filter_settings import prf_filter_settings
+from stadiumpy.PRFpages.prf_display_settings import prf_display_settings
 from stadiumpy.page_control import PageControl
 from stadiumpy.plot_map_gui import plotMap
 import stadiumpy
@@ -80,7 +82,9 @@ class stadiumpy(tk.Tk):
 
         self.frames = {}
 
-        stadium_pages = (StartPage, PageRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion, ResultsSummary, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig)
+        stadium_pages = (StartPage, PageRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion,
+            ResultsSummary, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig,
+            PRF_filter, PRF_display)
         for F in stadium_pages:
 
             frame = F(container, self)
@@ -101,7 +105,9 @@ class stadiumpy(tk.Tk):
         root.destroy()  # this is necessary on Windows to prevent
 
 def pageArgsOut():
-    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion, PageSRF, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig)
+    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion,
+         PageSRF, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig,
+         PRF_filter, PRF_display)
     return pageArgs
 
 
@@ -185,6 +191,18 @@ class PRF_eventsSearch(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+
+class PRF_filter(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        prf_filter_settings(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+
+class PRF_display(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgsOut())
 
         
 

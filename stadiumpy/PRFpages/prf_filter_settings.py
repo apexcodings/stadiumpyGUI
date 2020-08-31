@@ -13,7 +13,7 @@ from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, button_options_nav, button_options_back
 
 
-def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
+def prf_filter_settings(self, ttk, parent, controller, adv_prf, *pageArgs):
         RELY = 0
         RELHEIGHT, RELWIDTH = 0.05, 0.2
         RELXS = np.linspace(0,1,6)
@@ -52,15 +52,15 @@ def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
 
         ##########################################
 
-        lbl1 = ttk.Label(self, text=r'Events Search', **labHeadOptions, relief=RIDGE)
+        lbl1 = ttk.Label(self, text=r'Filter Settings', **labHeadOptions, relief=RIDGE)
         lbl1.configure(anchor="center")
         RELY += RELHEIGHT+0.01 
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
 
 
         ##
-        evsearch_vars = list(adv_prf['rf_event_search_settings'].keys())
-        evsearch_vals = list(adv_prf['rf_event_search_settings'].values())
+        evsearch_vars = list(adv_prf['rf_filter_settings'].keys())
+        evsearch_vals = list(adv_prf['rf_filter_settings'].values())
 
         kk=0
         while kk<len(evsearch_vars):

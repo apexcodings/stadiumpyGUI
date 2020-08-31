@@ -77,12 +77,26 @@ def prfview(self, ttk, parent, controller, adv_prf, *pageArgs):
         button_profile.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
 
         ## RF events search
-
         def gotoeventssearch():
                 controller.show_frame(pageArgs[9])
-        button_profile = Button(self, text="Configure Events Search", command=gotoeventssearch, **button_options)
+        button_evsearch = Button(self, text="Configure Events Search", command=gotoeventssearch, **button_options)
 
-        button_profile.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
+        button_evsearch.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
+        
+        ## RF filter
+        RELY += RELHEIGHT+0.01 
+        def gotofiltersettings():
+                controller.show_frame(pageArgs[11])
+        button_filter = Button(self, text="Set Filter", command=gotofiltersettings, **button_options)
+
+        button_filter.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
+        
+        ## RF filter
+        def gotofplotsettings():
+                controller.show_frame(pageArgs[12])
+        button_filter = Button(self, text="Configure RF plot", command=gotofplotsettings, **button_options)
+
+        button_filter.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
         
 
         
