@@ -12,7 +12,19 @@ button_options_green = {
             "borderless":1,
             'activebackground':('#AE0E36', '#D32E5E')
             }
-
+# button_options_nav = {
+#             "bg":'#e67e22', 
+#             "fg":'#00203F', 
+#             "borderless":1,
+#             'activebackground':('#AE0E36', '#D32E5E')
+#             }
+button_options_back = {
+            "bg":'#3598dc', 
+            "fg":'#00203F', 
+            "borderless":1,
+            'activebackground':('#AE0E36', '#D32E5E')
+            }
+button_options_nav = { "borderwidth":1, "font":('calibri', 16, 'bold'), "fg":"black"}
 
 def toggle_mode(button_mode):
     if button_mode['text'] == 'Automated':

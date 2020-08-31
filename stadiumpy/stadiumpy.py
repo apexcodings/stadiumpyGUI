@@ -14,6 +14,10 @@ from stadiumpy.srf_page import srfview
 from stadiumpy.dataenquirypage import dataenquiry
 from stadiumpy.sks_page import sksview
 from stadiumpy.results_summary_page import res_sum
+from stadiumpy.PRFpages.prf_filename import prf_filename
+from stadiumpy.PRFpages.prf_hkappa import prf_hkappa
+from stadiumpy.PRFpages.prf_profile_config import prf_profile_config
+from stadiumpy.PRFpages.prf_eventssearch import prf_eventssearch
 from stadiumpy.page_control import PageControl
 from stadiumpy.plot_map_gui import plotMap
 import stadiumpy
@@ -35,7 +39,6 @@ with open(inp_file_yaml) as f:
 
 with open(adv_prf_yaml) as f:
     adv_prf = yaml.load(f, Loader=yaml.FullLoader)
-
 
 class stadiumpy(tk.Tk):
 
@@ -77,7 +80,8 @@ class stadiumpy(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, PageRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion, ResultsSummary):
+        stadium_pages = (StartPage, PageRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion, ResultsSummary, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig)
+        for F in stadium_pages:
 
             frame = F(container, self)
 
@@ -97,14 +101,19 @@ class stadiumpy(tk.Tk):
         root.destroy()  # this is necessary on Windows to prevent
 
 def pageArgsOut():
-    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion, PageSRF)
+    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion, PageSRF, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig)
     return pageArgs
+
 
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
         startview(self, ttk, parent, controller, inp, image_name, *pageArgsOut())
+
+        pageArgs = pageArgsOut()
+        for i in range(len(pageArgs)):
+            print(i, pageArgs[i])
 
         
 
@@ -133,8 +142,6 @@ class PageDataEnquiry(tk.Frame):
         dataenquiry(self, ttk, parent, controller, inp, *pageArgsOut())
         
 
-    
-
 class PageSKS(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -153,6 +160,31 @@ class ResultsSummary(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         res_sum(self, ttk, parent, controller, inp, *pageArgsOut())
+
+
+class PRF_filenames(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        prf_filename(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+
+class PRF_hkappa(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        prf_hkappa(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+
+class PRF_profileconfig(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        prf_profile_config(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+
+class PRF_eventsSearch(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgsOut())
 
         
 

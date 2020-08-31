@@ -10,208 +10,79 @@ from PIL import ImageTk, Image
 from stadiumpy.widgets import SFrame, Button
 
 from stadiumpy.top_buttons import display_main_buttons
-from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF
+from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, button_options_nav, button_options_back
 
 def prfview(self, ttk, parent, controller, adv_prf, *pageArgs):
 
-    print("response from prf page")
+        #     print("response from prf page")
 
-    RELY = 0
-    RELHEIGHT, RELWIDTH = 0.05, 0.2
-    RELXS = np.linspace(0,1,6)
-    drelx = 0.01
-    RELXS[1:]= RELXS[1:]+drelx
-    halfCellX = (RELXS[2]-RELXS[1])/2
+        RELY = 0
+        RELHEIGHT, RELWIDTH = 0.05, 0.2
+        RELXS = np.linspace(0,1,6)
+        drelx = 0.01
+        # RELXS[1:]= RELXS[1:]+drelx
+        halfCellX = (RELXS[2]-RELXS[1])/2
 
-    # topcanvas = tk.Canvas(self)
-    # topcanvas.config(bg='#ecebec')
-    # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
+        # topcanvas = tk.Canvas(self)
+        # topcanvas.config(bg='#ecebec')
+        # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
-    display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
-    stad_mode = "Go to S-RF"
-    button_options = button_options_green 
-    fontDict = {"font":('calibri', 12, 'bold')}
-    button_options = {**button_options, **fontDict}
+        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
+        stad_mode = "Go to S-RF"
+        button_options = button_options_nav 
+        fontDict = {"font":('calibri', 16, 'bold')}
+        button_options = {**button_options, **fontDict}
 
-
-
-    labHeadOptions = {"font":('calibri', 16, 'bold'), "anchor":"center"}
-    label_options = {"font":('calibri', 12, 'normal')}
-        
-    ################TOP Button###########
-    RELY += RELHEIGHT+0.01 
-    lbl1 = ttk.Label(self, text="P-RF", relief=RIDGE, **labHeadOptions)
-    lbl1.configure(anchor="center")
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+        fontDictSecondary = {"font":('calibri', 12, 'bold')}
+        button_optionsSecondary = {**button_options_back, **fontDictSecondary}
 
 
-    button_mode = Button(self, text=stad_mode, command=lambda: toggle_PRF(button_mode, controller, pageArgs), **button_options)
 
-    button_mode.place(relx=RELXS[4]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        labHeadOptions = {"font":('calibri', 18, 'bold'), "anchor":"center"}
+        label_options = {"font":('calibri', 12, 'normal')}
 
-
-    ###########################################
-    lbl1 = ttk.Label(self, text="Filenames:", **labHeadOptions)
-    RELY += RELHEIGHT+0.01 
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
-
-    filename_vars = list(adv_prf['filenames'].keys())
-    filename_vals = list(adv_prf['filenames'].values())
-    kk=0
-
-    while kk<len(filename_vars):
+        ################TOP Button###########
         RELY += RELHEIGHT+0.01 
-        lbl1 = ttk.Label(self, text=filename_vars[kk]+":", **label_options)
-        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-        entry1 = ttk.Entry(self)
-        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-        entry1.insert(0,filename_vals[kk])
-        kk+=1
-
-        ##
-        lbl1 = ttk.Label(self, text=filename_vars[kk]+":", **label_options)
-        lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-        entry1 = ttk.Entry(self)
-        entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-        entry1.insert(0,filename_vals[kk])
-        kk+=1
-
-    ###########################################
-
-    lbl1 = ttk.Label(self, text=r'Crustal Thickness (h) - Vp/Vs (kappa)', **labHeadOptions)
-    RELY += RELHEIGHT+0.01 
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+        lbl1 = ttk.Label(self, text="P-RF", **labHeadOptions)
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
 
 
-    ##
-    hkappa_vars = list(adv_prf['h_kappa_settings'].keys())
-    hkappa_vals = list(adv_prf['h_kappa_settings'].values())
+        button_mode = Button(self, text=stad_mode, command=lambda: toggle_PRF(button_mode, controller, pageArgs), **button_optionsSecondary)
 
-    RELY += RELHEIGHT+0.01 #new line
-    kk = 0
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        button_mode.place(relx=RELXS[4]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
-    entry1 = ttk.Entry(self)
-    entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-    entry1.insert(0,hkappa_vals[kk])
+        ## filenames button
+        RELY += RELHEIGHT+0.01 
+        def gotofilenameprf():
+                controller.show_frame(pageArgs[7])
+        button_filename = Button(self, text="Set File Names", command=gotofilenameprf, **button_options)
 
-    ##
+        button_filename.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
 
+        ## set h kappa
+        def gotohkappaprf():
+                controller.show_frame(pageArgs[8])
+        button_filename = Button(self, text="Set H-Kappa", command=gotohkappaprf, **button_options)
 
-    kk+=1
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[2]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        button_filename.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
 
+        ## RF profile config
+        RELY += RELHEIGHT+0.01 
 
-    frsttext, button_options = button_init(hkappa_vals[kk])
-    button_hkappa1 = Button(self, 
-            text=frsttext,
-            command=lambda: toggle_button(button_hkappa1),
-            **button_options
-            )
-    button_hkappa1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        def gotoprofileconfig():
+                controller.show_frame(pageArgs[10])
+        button_profile = Button(self, text="Configure Profile", command=gotoprofileconfig, **button_options)
 
+        button_profile.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
 
-    kk+=1
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[3]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        ## RF events search
 
+        def gotoeventssearch():
+                controller.show_frame(pageArgs[9])
+        button_profile = Button(self, text="Configure Events Search", command=gotoeventssearch, **button_options)
 
-    frsttext, button_options = button_init(hkappa_vals[kk])
-    button_hkappa2 = Button(self, 
-            text=frsttext,
-            command=lambda: toggle_button(button_hkappa2),
-            **button_options
-            )
-    button_hkappa2.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        button_profile.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
+        
 
-
-    ###########################################
-
-    lbl1 = ttk.Label(self, text=r'RF Profile Configure', **labHeadOptions)
-    lbl1.configure(anchor="center")
-    RELY += RELHEIGHT+0.01 
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
-
-
-    ##
-    hkappa_vars = list(adv_prf['rf_profile_settings'].keys())
-    hkappa_vals = list(adv_prf['rf_profile_settings'].values())
-
-    RELY += RELHEIGHT+0.01 #new line
-    kk = 0
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-    entry1 = ttk.Entry(self)
-    entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
-    entry1.insert(0,hkappa_vals[kk])
-
-    ##
-
-    kk+=1
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[1]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
-
-
-    entry1 = ttk.Entry(self)
-    entry1.insert(0,hkappa_vals[kk])
-    entry1.place(relx=RELXS[2]+drelx+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
-
-
-    kk+=1
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
-
-
-    entry1 = ttk.Entry(self)
-    entry1.insert(0,hkappa_vals[kk])
-    entry1.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
-
-
-    ###########################################
-
-    lbl1 = ttk.Label(self, text=r'Events Search', **labHeadOptions)
-    lbl1.configure(anchor="center")
-    RELY += RELHEIGHT+0.01 
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
-
-
-    ##
-    hkappa_vars = list(adv_prf['rf_profile_settings'].keys())
-    hkappa_vals = list(adv_prf['rf_profile_settings'].values())
-
-    RELY += RELHEIGHT+0.01 #new line
-    kk = 0
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-    entry1 = ttk.Entry(self)
-    entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
-    entry1.insert(0,hkappa_vals[kk])
-
-    ##
-
-    kk+=1
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[1]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
-
-
-    entry1 = ttk.Entry(self)
-    entry1.insert(0,hkappa_vals[kk])
-    entry1.place(relx=RELXS[2]+drelx+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
-
-
-    kk+=1
-    lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
-
-
-    entry1 = ttk.Entry(self)
-    entry1.insert(0,hkappa_vals[kk])
-    entry1.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
-
-    
+        

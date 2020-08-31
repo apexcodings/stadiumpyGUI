@@ -59,7 +59,7 @@ def plotMap(self, ttk, parent, controller, inp, image_name, *pageArgs):
     RELHEIGHT, RELWIDTH = 0.05, 0.2
     RELXS = np.linspace(0,1,6)
     drelx = 0.01
-    RELXS[1:]= RELXS[1:]+drelx
+    # RELXS[1:]= RELXS[1:]+drelx
 
     topcanvas = tk.Canvas(self)
     topcanvas.config(bg='#ecebec')
