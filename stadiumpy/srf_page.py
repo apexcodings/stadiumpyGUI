@@ -49,4 +49,4 @@ def srfview(self, ttk, parent, controller, adv_prf, *pageArgs):
 
     button_mode = Button(self, text=stad_mode, command=lambda: toggle_SRF(button_mode, controller, pageArgs), **button_optionsSecondary)
 
-    button_mode.place(relx=RELXS[4]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+    button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)

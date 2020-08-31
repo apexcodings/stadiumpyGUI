@@ -26,7 +26,7 @@ def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
         # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
-        stad_mode = "BACK"
+        stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
         button_options = {**button_options, **fontDict}
@@ -48,7 +48,7 @@ def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
 
         button_mode = Button(self, text=stad_mode, command=back_prf, **button_options)
 
-        button_mode.place(relx=RELXS[4]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
         ##########################################
 

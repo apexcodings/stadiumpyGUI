@@ -26,7 +26,7 @@ def prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgs):
         # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
-        stad_mode = "BACK"
+        stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
         button_options = {**button_options, **fontDict}
@@ -48,7 +48,7 @@ def prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgs):
 
         button_mode = Button(self, text=stad_mode, command=back_prf, **button_options)
 
-        button_mode.place(relx=RELXS[4]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
         ##########################################
 
@@ -85,6 +85,7 @@ def prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgs):
         
         
         ##
+        RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text=r'Plot Filters', **labHeadOptions, relief=RIDGE)
         lbl1.configure(anchor="center")
         RELY += RELHEIGHT+0.01 
@@ -95,22 +96,56 @@ def prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgs):
         plotting_vals = list(adv_prf['rf_plotting_settings'].values())
 
         kk=0
-        while kk<len(plotting_vars):
-                RELY += RELHEIGHT+0.01 
-                lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
-                lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
-                entry1 = ttk.Entry(self)
-                entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-                entry1.insert(0,plotting_vals[kk])
-                kk+=1
+        entry1 = ttk.Entry(self)
+        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+        entry1.insert(0,plotting_vals[kk])
+        kk+=1
 
-                ##
-                lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
-                lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        ##
+        lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
+        lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
-                entry1 = ttk.Entry(self)
-                entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-                entry1.insert(0,plotting_vals[kk])
-                kk+=1
+        entry1 = ttk.Entry(self)
+        entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+        entry1.insert(0,plotting_vals[kk])
+        kk+=1
+
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        frsttext, button_options = button_init(plotting_vals[kk])
+        button_good_bad = Button(self, 
+                text=frsttext,
+                command=lambda: toggle_button(button_good_bad),
+                **button_options
+                )
+        button_good_bad.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+
+        # entry1 = ttk.Entry(self)
+        # entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+        # entry1.insert(0,plotting_vals[kk])
+        kk+=1
+
+        ##
+        lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
+        lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        frsttext, button_options = button_init(plotting_vals[kk])
+        button_good_bad2 = Button(self, 
+                text=frsttext,
+                command=lambda: toggle_button(button_good_bad2),
+                **button_options
+                )
+        button_good_bad2.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+
+
+        # entry1 = ttk.Entry(self)
+        # entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+        # entry1.insert(0,plotting_vals[kk])
+        # kk+=1
         
