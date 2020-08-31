@@ -59,36 +59,56 @@ def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
 
 
         ##
-        hkappa_vars = list(adv_prf['rf_profile_settings'].keys())
-        hkappa_vals = list(adv_prf['rf_profile_settings'].values())
+        evsearch_vars = list(adv_prf['rf_event_search_settings'].keys())
+        evsearch_vals = list(adv_prf['rf_event_search_settings'].values())
 
-        RELY += RELHEIGHT+0.01 #new line
-        kk = 0
-        lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        kk=0
+        while kk<len(evsearch_vars):
+                RELY += RELHEIGHT+0.01 
+                lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
-        entry1 = ttk.Entry(self)
-        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
-        entry1.insert(0,hkappa_vals[kk])
+                entry1 = ttk.Entry(self)
+                entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+                entry1.insert(0,evsearch_vals[kk])
+                kk+=1
 
-        ##
+                ##
+                lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
-        kk+=1
-        lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-        lbl1.place(relx=RELXS[1]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
+                entry1 = ttk.Entry(self)
+                entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+                entry1.insert(0,evsearch_vals[kk])
+                kk+=1
+        # RELY += RELHEIGHT+0.01 #new line
+        # kk = 0
+        # lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
+        # lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        # entry1 = ttk.Entry(self)
+        # entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+        # entry1.insert(0,evsearch_vals[kk])
+
+        # ##
+
+        # kk+=1
+        # lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
+        # lbl1.place(relx=RELXS[1]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
 
 
-        entry1 = ttk.Entry(self)
-        entry1.insert(0,hkappa_vals[kk])
-        entry1.place(relx=RELXS[2]+drelx+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        # entry1 = ttk.Entry(self)
+        # entry1.insert(0,evsearch_vals[kk])
+        # entry1.place(relx=RELXS[2]+drelx+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
 
-        kk+=1
-        lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-        lbl1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
+        # RELY += RELHEIGHT+0.01 #new line
+        # kk+=1
+        # lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
+        # lbl1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
 
 
-        entry1 = ttk.Entry(self)
-        entry1.insert(0,hkappa_vals[kk])
-        entry1.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        # entry1 = ttk.Entry(self)
+        # entry1.insert(0,evsearch_vals[kk])
+        # entry1.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
