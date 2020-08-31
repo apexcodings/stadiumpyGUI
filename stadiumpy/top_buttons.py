@@ -1,3 +1,6 @@
+"""
+Setting the primary top button of the GUI
+"""
 
 from stadiumpy.widgets import SFrame, Button
 
@@ -13,11 +16,11 @@ def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *page
                         command=lambda: controller.show_frame(pageArgs[1]))
 
     ## RF page
-    prf_button = Button(self, text="RF Parameters",
+    prf_button = Button(self, text="Receiver Functions",
                         command=lambda: controller.show_frame(pageArgs[2]))
 
     ## SKS page
-    sks_button = Button(self, text="SKS Parameters",
+    sks_button = Button(self, text="Shear-wave Splitting",
                         command=lambda: controller.show_frame(pageArgs[3]))
 
     ## 

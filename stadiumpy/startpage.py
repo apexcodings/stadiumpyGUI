@@ -1,3 +1,7 @@
+"""
+This script for the startpage (homepage) for the stadiumpy. This can be used to set the main parameters of
+the software run. It can also be use to access other pages including results and computations.
+"""
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
@@ -5,16 +9,13 @@ from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y,
 
 from stadiumpy.plot_geomap import plot_map
 from PIL import ImageTk, Image
-# from stadiumpy_gui import PageGeoRegion
 from stadiumpy.plot_map_gui import plotMap
 import os
-# from stadiumpy_gui import mapImage
 import stadiumpy as stpy
 
 from stadiumpy.widgets import SFrame, Button
 from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button
-# from stadiumpy.stadiumpy import pageArgs
 
 
 def startview(self, ttk, parent, controller, inp, image_name, *pageArgs):
@@ -237,9 +238,9 @@ def startview(self, ttk, parent, controller, inp, image_name, *pageArgs):
     button_plotmap.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
     print(RELHEIGHT)
 
-    RELY += RELHEIGHT+0.01
-    listbox = tk.Listbox(self)
-    listbox.place(relx=RELXS[0], rely=RELY, relheight=13*RELHEIGHT, relwidth=5*RELWIDTH)
-    for jj in range(500):
-        listbox.insert(0, f"test {jj}")
+    # RELY += RELHEIGHT+0.01
+    # listbox = tk.Listbox(self)
+    # listbox.place(relx=RELXS[0], rely=RELY, relheight=13*RELHEIGHT, relwidth=5*RELWIDTH)
+    # for jj in range(500):
+    #     listbox.insert(0, f"test {jj}")
         # listbox.insert(tk.END, f"test {jj}")

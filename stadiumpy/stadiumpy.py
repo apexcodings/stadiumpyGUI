@@ -1,3 +1,6 @@
+"""
+Wrapper for the stadiumpy GUI
+"""
 import tkinter as tk
 from tkinter import ttk
 # from tkinter import filedialog, Text
@@ -20,8 +23,6 @@ if not os.path.exists(cachedirec):
     os.makedirs(cachedirec, exist_ok=True)
 
 image_name = os.path.join('.cache', 'region-plot.png')
-# image_name = ".stadiumpyCache/region-plot.png"
-# image_name = "region-plot.png"
 
 # read inputYAML
 
@@ -76,7 +77,7 @@ class stadiumpy(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, PageRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion, ResultsSummary):
+        for F in (StartPage, PageRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion, ResultsSummary):
 
             frame = F(container, self)
 
@@ -96,7 +97,7 @@ class stadiumpy(tk.Tk):
         root.destroy()  # this is necessary on Windows to prevent
 
 def pageArgsOut():
-    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion)
+    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion, PageSRF)
     return pageArgs
 
 class StartPage(tk.Frame):

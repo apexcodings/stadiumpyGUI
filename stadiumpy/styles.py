@@ -1,3 +1,6 @@
+"""
+Everything related to page styling.
+"""
 button_options_red = {'bg':'#E69A8D', 
                 "fg":'#5F4B8B', 
                 "borderless":1,
@@ -20,6 +23,13 @@ def toggle_mode(button_mode):
         dictAdd = {'text':'Automated', 'bg':'#ADEFD1', 'fg': '#00203F'}
         for key, value in dictAdd.items():
             button_mode[key]=value
+
+def toggle_PRF(button_mode, controller, pageArgs):
+    controller.show_frame(pageArgs[6])
+
+
+def toggle_SRF(button_mode, controller, pageArgs):
+    controller.show_frame(pageArgs[2])
 
 
 def toggle_button(button):
