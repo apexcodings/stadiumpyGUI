@@ -145,6 +145,19 @@ code {
   <div class="text">Receiver Functions - Plot Settings</div>
 </div>
 
+<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+<a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+</div>
+<br>
+
+<div style="text-align:center">
+  <span class="dot" onclick="currentSlide(1)"></span> 
+  <span class="dot" onclick="currentSlide(2)"></span> 
+  <span class="dot" onclick="currentSlide(3)"></span> 
+</div>
+
+<div class="slideshow-container">
 <h2>Installation Steps</h2>
 <ul>
     <li>Create Environment <br>
@@ -167,20 +180,7 @@ code {
 <!-- 10. `pip install tkmacosx` : modified widgets of Tkinter -->
 <h2>Export environment</h2>
 <code>conda env export --name stadiumpy > stadiumpy_env.yml</code>
-
-
-<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-<a class="next" onclick="plusSlides(1)">&#10095;</a>
-
 </div>
-<br>
-
-<div style="text-align:center">
-  <span class="dot" onclick="currentSlide(1)"></span> 
-  <span class="dot" onclick="currentSlide(2)"></span> 
-  <span class="dot" onclick="currentSlide(3)"></span> 
-</div>
-
 <script>
 var slideIndex = 1;
 showSlides(slideIndex);
