@@ -40,7 +40,7 @@ def prf_hkappa(self, ttk, parent, controller, adv_prf, *pageArgs):
     RELY += RELHEIGHT+0.01 
     lbl1 = ttk.Label(self, text="P-RF", **labHeadOptions)
     lbl1.configure(anchor="center")
-    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+    lbl1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
 
     def back_prf():
         controller.show_frame(pageArgs[2])
@@ -74,8 +74,9 @@ def prf_hkappa(self, ttk, parent, controller, adv_prf, *pageArgs):
 
 
     kk+=1
+    RELY += RELHEIGHT+0.01 #new line
     lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[2]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+    lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
 
     frsttext, button_options = button_init(hkappa_vals[kk])
@@ -84,12 +85,12 @@ def prf_hkappa(self, ttk, parent, controller, adv_prf, *pageArgs):
             command=lambda: toggle_button(button_hkappa1),
             **button_options
             )
-    button_hkappa1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+    button_hkappa1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
 
 
     kk+=1
     lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
-    lbl1.place(relx=RELXS[3]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+    lbl1.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
 
     frsttext, button_options = button_init(hkappa_vals[kk])
@@ -98,4 +99,4 @@ def prf_hkappa(self, ttk, parent, controller, adv_prf, *pageArgs):
             command=lambda: toggle_button(button_hkappa2),
             **button_options
             )
-    button_hkappa2.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+    button_hkappa2.place(relx=RELXS[3]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)

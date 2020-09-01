@@ -40,7 +40,7 @@ def prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgs):
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text="P-RF", **labHeadOptions)
         lbl1.configure(anchor="center")
-        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+        lbl1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
 
         def back_prf():
                 controller.show_frame(pageArgs[2])

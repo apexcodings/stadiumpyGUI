@@ -98,5 +98,3 @@ def prfview(self, ttk, parent, controller, adv_prf, *pageArgs):
 
         button_filter.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
         
-
-        
