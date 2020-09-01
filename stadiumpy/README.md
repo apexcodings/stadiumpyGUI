@@ -9,6 +9,7 @@
 ![P Receiver Functions: Set Filenames](assets/prf_filename.jpg)
 
 ![P receiver functions: plot settings](assets/prf_plot_settings.jpg)
+
 ## Installation Steps
 
 - Create Environment
