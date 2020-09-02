@@ -803,10 +803,10 @@ class PRF_filenames(tk.Frame):
             kk+=1
 
     def getOutput(self):
-        self.outputResult = {}
+        outputResult = {}
         for key, value in self.outputDict.items():
-            self.outputResult[key] = value.get()
-        return self.outputResult
+            outputResult[key] = value.get()
+        return outputResult
             
 
         # print(self.outputDict)
