@@ -13,7 +13,7 @@ from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, button_options_nav, button_options_back
 
 
-def prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgs):
+def prf_display_settings(self, ttk, controller, adv_prf, *pageArgs):
         RELY = 0
         RELHEIGHT, RELWIDTH = 0.05, 0.2
         RELXS = np.linspace(0,1,6)

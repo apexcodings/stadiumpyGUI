@@ -12,9 +12,7 @@ from stadiumpy.widgets import SFrame, Button
 from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, button_options_nav, button_options_back
 
-def prfview(self, ttk, parent, controller, adv_prf, *pageArgs):
-
-        #     print("response from prf page")
+def prfview(self, ttk, controller, adv_prf, *pageArgs):
 
         RELY = 0
         RELHEIGHT, RELWIDTH = 0.05, 0.2
@@ -97,4 +95,3 @@ def prfview(self, ttk, parent, controller, adv_prf, *pageArgs):
         button_filter = Button(self, text="Configure RF plot", command=gotofplotsettings, **button_options)
 
         button_filter.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
-        

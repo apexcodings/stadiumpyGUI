@@ -18,7 +18,7 @@ from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button
 
 
-def startview(self, ttk, parent, controller, inp, image_name, *pageArgs):
+def startview(self, ttk, controller, inp, image_name, *pageArgs):
     
     main_frame = tk.Frame(self)
     main_frame.pack(fill=BOTH, expand=1)

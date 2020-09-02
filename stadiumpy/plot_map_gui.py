@@ -44,7 +44,7 @@ def startpagebtn(controller, StartPage):
     # canvas.delete("all")
     controller.show_frame(StartPage)
 
-def plotMap(self, ttk, parent, controller, inp, image_name, *pageArgs):
+def plotMap(self, ttk, controller, inp, image_name, *pageArgs):
     # print("Running plotMap function in plot_map_gui")
 
     main_frame = tk.Frame(self)

@@ -13,7 +13,7 @@ from stadiumpy.top_buttons import display_main_buttons
 from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, button_options_nav, button_options_back, toggle_SRF
 
 
-def srfview(self, ttk, parent, controller, adv_prf, *pageArgs):
+def srfview(self, ttk, controller, adv_prf, *pageArgs):
     print("response from srf page")
     RELY = 0
     RELHEIGHT, RELWIDTH = 0.05, 0.2

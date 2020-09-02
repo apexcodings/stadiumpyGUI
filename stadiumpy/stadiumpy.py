@@ -42,6 +42,8 @@ with open(inp_file_yaml) as f:
 with open(adv_prf_yaml) as f:
     adv_prf = yaml.load(f, Loader=yaml.FullLoader)
 
+
+
 class stadiumpy(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -67,19 +69,6 @@ class stadiumpy(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
 
-
-        ## Bottom frame
-        container2 = tk.Frame(self, relief=RAISED, borderwidth=2)
-        container2.pack(side="bottom",fill="both", expand=True)
-
-        closeButton = Button(container2, text="Close", command=self._quit,style = 'W.TButton')
-        closeButton.pack(side="right", padx=5, pady=5)
-
-
-        runButton = Button(container2,style = 'W.TButton', text="Run")
-        runButton.pack(side="left", padx=5, pady=5)
-
-
         self.frames = {}
 
         stadium_pages = (StartPage, PageRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion,
@@ -94,6 +83,21 @@ class stadiumpy(tk.Tk):
 
         self.show_frame(StartPage)
 
+        ## Bottom frame
+        container2 = tk.Frame(self, relief=RAISED, borderwidth=2)
+        container2.pack(side="bottom",fill="both", expand=True)
+
+        closeButton = Button(container2, text="Close", command=self._quit,style = 'W.TButton')
+        closeButton.pack(side="right", padx=5, pady=5)
+
+        def runStadiumpy():
+            print("Run Stadiumpy")
+            # out = PRF_filenames.get_output()
+            # out = prf_filename(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+            # print(out)
+
+        runButton = Button(container2,style = 'W.TButton', text="Run", command=runStadiumpy)
+        runButton.pack(side="left", padx=5, pady=5)
 
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -115,7 +119,7 @@ class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
-        startview(self, ttk, parent, controller, inp, image_name, *pageArgsOut())
+        startview(self, ttk, controller, inp, image_name, *pageArgsOut())
 
         pageArgs = pageArgsOut()
         for i in range(len(pageArgs)):
@@ -128,7 +132,7 @@ class PageRF(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prfview(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+        prfview(self, ttk, controller, adv_prf, *pageArgsOut())
 
 
 
@@ -137,7 +141,7 @@ class PageSRF(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        srfview(self, ttk, parent, controller, inp, *pageArgsOut())
+        srfview(self, ttk, controller, inp, *pageArgsOut())
         
 
 
@@ -145,68 +149,68 @@ class PageDataEnquiry(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        dataenquiry(self, ttk, parent, controller, inp, *pageArgsOut())
+        dataenquiry(self, ttk, controller, inp, *pageArgsOut())
         
 
 class PageSKS(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        sksview(self, ttk, parent, controller, inp, *pageArgsOut())
+        sksview(self, ttk, controller, inp, *pageArgsOut())
 
 
 class PageGeoRegion(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        plotMap(self, ttk, parent, controller, inp, image_name, *pageArgsOut())
+        plotMap(self, ttk, controller, inp, image_name, *pageArgsOut())
         
 class ResultsSummary(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        res_sum(self, ttk, parent, controller, inp, *pageArgsOut())
+        res_sum(self, ttk, controller, inp, *pageArgsOut())
 
 
 class PRF_filenames(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prf_filename(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+        out = prf_filename(self, ttk, controller, adv_prf, *pageArgsOut())
 
 class PRF_hkappa(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prf_hkappa(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+        prf_hkappa(self, ttk, controller, adv_prf, *pageArgsOut())
 
 class PRF_profileconfig(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prf_profile_config(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+        prf_profile_config(self, ttk, controller, adv_prf, *pageArgsOut())
 
 class PRF_eventsSearch(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prf_eventssearch(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+        prf_eventssearch(self, ttk, controller, adv_prf, *pageArgsOut())
 
 class PRF_filter(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prf_filter_settings(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+        prf_filter_settings(self, ttk, controller, adv_prf, *pageArgsOut())
 
 class PRF_display(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        prf_display_settings(self, ttk, parent, controller, adv_prf, *pageArgsOut())
+        prf_display_settings(self, ttk, controller, adv_prf, *pageArgsOut())
 
         
 
-
+prffilename = PRF_filenames(parent, controller)
 
 app = stadiumpy()
 app.mainloop()
