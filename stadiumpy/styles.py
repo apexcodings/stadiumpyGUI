@@ -1,6 +1,9 @@
 """
 Everything related to page styling.
 """
+from stadiumpy.font_properties import *
+import platform
+
 button_options_red = {'bg':'#E69A8D', 
                 "fg":'#5F4B8B', 
                 "borderless":1,
@@ -25,6 +28,20 @@ button_options_back = {
             'activebackground':('#AE0E36', '#D32E5E')
             }
 button_options_nav = { "borderwidth":1, "font":('calibri', 16, 'bold'), "fg":"black"}
+
+
+os_platform = platform.system()
+
+if os_platform is "Darwin":
+    topbuttons_options = {"borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised"}
+    topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
+elif os_platform is "Linux":
+    topbuttons_options = {"borderwidth":1, "font":('calibri', 10, 'bold'), "relief":"raised"}
+    topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 10, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
+else:
+    topbuttons_options = {"borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised"}
+    topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
+
 
 def toggle_mode(button_mode):
     if button_mode['text'] == 'Automated':

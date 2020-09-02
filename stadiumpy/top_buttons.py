@@ -3,10 +3,10 @@ Setting the primary top button of the GUI
 """
 
 from stadiumpy.widgets import SFrame, Button
+from stadiumpy.styles import topbuttons_options, topbuttons_options_selected
 
 def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=0):
-    topbuttons_options = {"borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised"}
-    topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
+    
     ## Startpage page
     stpg_button = Button(self, text="Home",
                         command=lambda: controller.show_frame(pageArgs[0]))

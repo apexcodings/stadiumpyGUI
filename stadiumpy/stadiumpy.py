@@ -22,7 +22,9 @@ from stadiumpy.PRFpages.prf_filter_settings import prf_filter_settings
 from stadiumpy.PRFpages.prf_display_settings import prf_display_settings
 from stadiumpy.page_control import PageControl
 from stadiumpy.plot_map_gui import plotMap
+from stadiumpy.font_properties import *
 import stadiumpy
+import platform
 
 cachedirec=".cache"
 if not os.path.exists(cachedirec):
@@ -57,7 +59,16 @@ class stadiumpy(tk.Tk):
         tk.Tk.wm_minsize(self, 800, 700) 
         style = Style()
         style.theme_use("default")
-        style.configure('W.TButton', font = ('calibri', 16, 'bold'),  borderwidth = '2', background="#c8ccc9")
+        
+        os_platform = platform.system()
+        if os_platform is "Darwin":
+            style.configure('W.TButton', font = fontOSX,  borderwidth = '2', background="#c8ccc9")
+        elif os_platform is "Linux":
+            style.configure('W.TButton', font = fontLinuX,  borderwidth = '2', background="#c8ccc9")
+        else:
+            style.configure('W.TButton', font = fontOSX,  borderwidth = '2', background="#c8ccc9")
+
+
 
         ## style for all buttons
         # style.configure('TButton', font = ('calibri', 16, 'bold'),  borderwidth = '2') 
@@ -209,8 +220,6 @@ class PRF_display(tk.Frame):
         prf_display_settings(self, ttk, controller, adv_prf, *pageArgsOut())
 
         
-
-prffilename = PRF_filenames(parent, controller)
 
 app = stadiumpy()
 app.mainloop()
