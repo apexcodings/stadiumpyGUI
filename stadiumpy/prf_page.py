@@ -21,9 +21,6 @@ def prfview(self, ttk, controller, adv_prf, *pageArgs):
         # RELXS[1:]= RELXS[1:]+drelx
         halfCellX = (RELXS[2]-RELXS[1])/2
 
-        # topcanvas = tk.Canvas(self)
-        # topcanvas.config(bg='#ecebec')
-        # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "Go to S-RF"
