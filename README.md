@@ -25,6 +25,7 @@
 7. `conda install -c conda-forge tqdm=4.48.2=pyh9f0ad1d_0` : progressbar
 8. `pip install rf` : receiver functions computation
 9. `pip install splitwavepy` : shear wave splitting measurements
+10. `pip install Pmw`
 <!-- 10. `pip install tkmacosx` : modified widgets of Tkinter -->
 
 ### Export environment
