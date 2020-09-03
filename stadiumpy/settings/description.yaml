@@ -1,0 +1,169 @@
+inputfile:
+  project_name: Folder name for the current project.
+  mode: Select mode to run the STADIUMpy
+  fresh_start: Option to delete (True) or keep (False) all previous computations.
+  summary_file: Text file where the summary are written.
+  makeRF: Compute the P-S receiver function.
+  makeSRF: Compute the S-P receiver function.
+  makeSKS: Compute the shear-wave splitting measurements of SKS phase.
+  mnlong: Minimum longitude of the selected region.
+  mxlong: Maximum longitude of the selected region.
+  mnlat: Minimum latitude of the selected region.
+  mxlat: Maximum latitude of the selected region.
+  exploreMap: Select the region with the assistance of map.
+dirnames:
+  RFdatafileloc: Directory for the P-RF H5 data.
+  RFinfoloc: Directory for the P-RF station and event information.
+  RFplotloc: Directory for the P-RF station profiles.
+  RFIndplotloc: Directory for the P-RF individual accepted RF.
+  RFIndRejplotloc: Directory for the P-RF individual rejected RF.
+  RFstaevnloc: Directory for the P-RF station maps.
+  RFprofilemaploc: Directory for the P-RF EW and NS profiles.
+  SFdatafileloc: Directory for the S-RF H5 data.
+  SFinfoloc: Directory for the S-RF station and event information.
+  SFplotloc: Directory for the S-RF station profiles.
+  SFIndplotloc: Directory for the S-RF individual accepted RF.
+  SFIndRejplotloc: Directory for the S-RF individual rejected RF.
+  SFstaevnloc: Directory for the S-RF station maps.
+  SFprofilemaploc: Directory for the S-RF EW and NS profiles.
+  SKSinfoloc: Directory for the SKS station and event information.
+  SKSstaevnloc: Directory for the SKS station maps.
+  SKSdatafileloc: Directory for the SKS H5 data.
+  SKStracesloc_ENZ: Directory for the SKS individual traces in ZNE coordinates.
+  SKStracesloc_RTZ: Directory for the SKS individual traces in ZRT coordinates.
+  SKS_trigger_loc: Directory for the SKS individual traces for which a SKS phase was picked successfully.
+  SKSplot_measure_loc: Directory for the SKS individual traces for which splitting parameters were determined successfully.
+  tmpdir: Folder name for temporary files
+LocalDatabase:
+  OfflineDatabase: Direcory name where the local database is stored.
+  OfflineRespFiles: Direcory name where the stationXML/PolesAndZeros files are stored.
+  OfflineCatalog: Direcory to store the events selected from the local database.
+  OfflineFileLoc: Easter egg? Files may be written to dataRF, dataSRF and dataSKS.
+  IndividualStationXML: If the database already includes individual StationXML files for each station.
+  GlobalStationXML: If the database already includes a global StationXML files for all stations.
+  PaZfiles: If the database already includes individual PolesAndZeros files for each station.
+  FileExtension: Extension of the local database files (mseed, sac, other). 
+  RespFileExtension: Extension of the StationXML files (xml).
+  PAZFileExtension: Extension of the PolesAndZeros files (PaZ).
+  RespAttached: Instrumental response already attached as dataless extension to the data file.
+stepwise:
+  client: List all the clients separated by commas
+  network: List all networks (*) for all networks
+  station: List all stations (*) for all stations
+  channel: List all stations (BHZ,BHE,BHN) by default.
+  locations: List all locations code ("" and "00") by default.
+  plot_stations: Option to plot the stations map of all available stations and all retrieved stations
+  plot_events: Option to plot the stations map of all events for each station.
+  plot_all_retrieved_events_stations: Option to plot the stations map of all retrieved events for each station.
+  obtain_inventory_RF: Creates a catalog of all events selected for the P-RF computation according to the defined magnitude and distance range for each station.
+  download_data_RF: Download the data from selected Obspy clients for the P-RF.
+  compute_plot_RF: Option to plotting the receiver functions for the P-RF.
+  plot_ppoints: Option to plotting the piercing points for the P-RF.
+  plot_RF_profile: Option to plotting the NS and EW profiles for the P-RF.
+  obtain_inventory_SRF: Creates a catalog of all events selected for the S-RF computation according to the defined magnitude and distance range for each station.
+  download_data_SRF: Download the data from selected Obspy clients for the S-RF.
+  compute_plot_SRF: Option to plotting the receiver functions for the S-RF.
+  plot_Sppoints: Option to plotting the piercing points for the S-RF.
+  plot_SRF_profile: Option to plotting the NS and EW profiles for the S-RF.
+  obtain_inventory_SKS: Creates a catalog of all events selected for the SKS computation according to the defined magnitude and distance range for each station.
+  download_data_SKS: Download the data from selected Obspy clients for the SKS measurements.
+  plot_traces_ENZ: Plot the original traces in ENZ component the SKS measurements.
+  plot_traces_RTZ: Plot the original traces in RTZ component the SKS measurements.
+  plot_SKS_measure: Plot the individual SKS measurements.
+######  plot_SKS: Seems we don't use this one, can be removed.
+  picking_SKS: Option to pick the SKS phase automatically.
+######  plot_traces: Seems we don't use this one, can be removed.
+  plot_trigger: Option to plot the traces with the SKS-arrival time triggered.
+  plot_data_nodata_map: Plot the summary map that segregates between stations with data and stations with no data.
+rfparams:
+  invRFfile: Name of the global stationXML files for the P-RF.
+  RFsta: Station text catalog for the P-RF.
+  retr_stations: Retrived stations list text file for the P-RF.
+  data_rf_suffix: P-RF data file name extension, with the following format {net}-{stn}-rf_profile_data.h5
+  events_map_suffix: Events map filename suffix, by default set to {net}-{stn}-RF-events_map.png
+  retr_station_prefix: Retrieved stations file name prefix for the P-RF.
+  rf_compute_data_suffix: P-RF computation result file name, by default set to {net}-{stn}-rf_profile_rfs.h5
+  rfprofile_compute_result_prefix: P-RF profile computation result file name, by default set to rf_profile_profile{azimuth}_*.h5
+  h_kappa_res_file: File name where the H-K results are stored.
+  plot_h: Plot the map of crustal thicknesses obtained by the H-K method.
+  plot_kappa: Plot the map of Vp/Vs ratio obtained by the H-K method.
+  num_profile_divs_lat: Number of vertical profiles (latitude) for the P-RF.
+  num_profile_divs_lon: Number of vertical profiles (longitude) for the P-RF.
+  ppdepth: Piercing points depth, set by default to 40km for the P-RF.
+  minradiusRF: Minimum epicentral distance between the station and events for the P-RF.
+  maxradiusRF: Maximum epicentral distance between the station and events for the P-RF.
+  minmagnitudeRF: Minimum eartquake magnitude for the P-RF.
+  maxmagnitudeRF: Maximum eartquake magnitude for the P-RF.
+  minfreq: Stream minimum frequency for bandpass for the P-RF.
+  maxfreq: Stream maximum frequency for bandpass for the P-RF.
+  trace_height: Height of one trace in inches for the P-RF.
+  trim_min: Relative time before the P-onset for plotting the P-RF.
+  trim_max: Relative time after the P-onset for plotting the P-RF.
+  rf_info: Additional axes for RF plot, None for no additional axes.
+  signalrf: Minimum energy on the Q component for quality check for the P-RF.
+  maxampRF: Minimum amplitude on the Q component for quality check for the P-RF.
+  plot_good_RF: Plot individual accepted P-RF.
+  plot_bad_RF: Plot individual rejected P-RF.
+srfparams:
+  invSRFfile: Name of the global stationXML files for the S-RF.
+  SRFsta: Station text catalog for the S-RF.
+  retr_stations: Retrived stations list text file for the S-RF.
+  data_srf_suffix: S-RF data file name extension, with the following format {net}-{stn}-srf_profile_data.h5
+  events_map_suffix: Events map filename suffix, by default set to {net}-{stn}-SRF-events_map.png
+  retr_station_prefix: Retrieved stations file name prefix for the S-RF.
+  srf_compute_data_suffix: S-RF computation result file name, by default set to {net}-{stn}-srf_profile_rfs.h5
+  srfprofile_compute_result_prefix: S-RF profile computation result file name, by default set to srf_profile_profile{azimuth}_*.h5
+  Snum_profile_divs_lat: Number of vertical profiles (latitude) for the S-RF.
+  Snum_profile_divs_lon: Number of vertical profiles (longitude) for the S-RF.
+  ppSdepth: Piercing points depth, set by default to 40km for the S-RF.
+  minradiusSRF: Minimum epicentral distance between the station and events for the S-RF.
+  maxradiusSRF: Maximum epicentral distance between the station and events for the S-RF.
+  minmagnitudeSRF: Minimum eartquake magnitude for the S-RF.
+  maxmagnitudeSRF: Maximum eartquake magnitude for the S-RF.
+  minfreq: Stream minimum frequency for bandpass for the S-RF.
+  maxfreq: Stream maximum frequency for bandpass for the S-RF.
+  trace_height: Height of one trace in inches for the S-RF.
+  trim_min: Relative time before the S-onset for plotting the S-RF.
+  trim_max: Relative time after the S-onset for plotting the S-RF.
+  srf_info: Additional axes for S-RF plot, None for no additional axes.
+  signalsrf: Minimum energy on the Q component for quality check for the S-RF.
+  maxampSRF: Minimum amplitude on the Q component for quality check for the S-RF.
+  plot_good_SRF: Plot individual accepted S-RF.
+  plot_bad_SRF: Plot individual rejected S-RF.
+sksparams:
+  invSKSfile: Name of the global stationXML files for the SKS method.
+  SKSsta: Station text catalog for the SKS computation.
+  retr_stations: Retrived stations list text file for the SKS computation.
+  data_sks_suffix: SKS data file name extension, with the following format {net}-{stn}-sks_profile_data.h5
+  events_map_suffix: Events map filename suffix, by default set to {net}-{stn}-SKS-events_map.png
+  retr_station_prefix: Retrieved stations file name prefix for the SKS computation.
+  sks_meas_indiv: SKS measurements file suffix for individual stations.
+  sks_measure_map: Filename of the map of shear-wave splitting measurements.
+  minradiusSKS: Minimum epicentral distance between the station and events for the SKS computation.
+  maxradiusSKS: Maximum epicentral distance between the station and events for the SKS computation.
+  minmagnitudeSKS: Minimum eartquake magnitude for the SKS computation.
+  maxmagnitudeSKS: Maximum eartquake magnitude for the SKS computation.
+  minfreq: Stream minimum frequency for bandpass.
+  maxfreq: Stream maximum frequency for bandpass.
+  trimstart: Relative time before the P-onset for plotting the SKS computation.
+  trimend: Relative time after the P-onset for plotting the SKS computation.
+  sks_picking_algo: Default selected picking algorithm for SKS phase (recursive_sta_lta). Other options are classic_sta_lta, z_detect, carl_sta_trig, delayed_sta_lta.
+  sks_picking_algo_thr0: Starting threshold for sks picking algorithm.
+  sks_picking_algo_thr1: End threshold for sks picking algorithm.
+  sel_param: Selection parameter of the measurements. Either use signal to noise ratio, snr or use the eigenvalue ratio (lambda1/lambda2), lam12.
+  snr_ratio: Minimum signal to noise ratio of the traces for filtering good measurements.
+  lam12fast_threh: Threshold for the lambda1/lambda2 for fast direction pick.
+  lam12lag_threh: Threshold for the lambda1/lambda2 for lag time pick.
+  minlag: Minimum allowed lag time in SKS measurements.
+  maxlag: Maximum allowed lag time in SKS measurements.
+  maxdlag: Maximum allowed error in the lag time.
+  maxdfast: Maximum allowed error in the fast direction.
+  measurement_snapshot: Option to save the splitting measurement snapshot for each event of each station.
+  plot_SI: Option to plot splitting intensity figure for each station.
+  segregate_measurements: Option to segregate the shear-wave splitting measurements.
+  show_no_measurement: Option to plot stations with no measurement.
+  show_null_measurements: Option to plot the stations with only null measurements on the map.
+  segregate_measurements_tofile: Option to outout the segregated measurements to text file.
+  meas_seg_points: Segregate data to plot sks measurements in different color (3 levels) - lev1 = 0, lev2 = 8, lev3 = 15.
+  error_plot_indiv: Option to plot the error profiles of fast direction and lag time for each measurements.
+  error_plot_all: Option to plot the error profiles of fast direction and lag time for each measurements.

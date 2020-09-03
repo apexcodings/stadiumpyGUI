@@ -21,6 +21,7 @@ from stadiumpy.styles import button_options_red, button_options_green, toggle_mo
 from stadiumpy.plot_geomap import plot_map
 from PIL import ImageTk, Image
 from tkinter import messagebox
+import Pmw
 print("Hello from", __name__)
 
 cachedirec=".cache"
@@ -31,7 +32,9 @@ image_name = os.path.join('.cache', 'region-plot.png')
 
 # read inputYAML
 inp_file_yaml = os.path.join(stdpy.__path__[0], 'settings', 'input_file.yaml')
-adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advancedRF.yaml')
+adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advRFparam.yaml')
+descrip_yaml = os.path.join(stdpy.__path__[0], 'settings', 'description.yaml')
+# adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advancedRF.yaml')
 # inp_file_yaml = 'settings/input_file.yaml'
 
 with open(inp_file_yaml) as f:
@@ -41,7 +44,8 @@ with open(inp_file_yaml) as f:
 with open(adv_prf_yaml) as f:
     adv_prf = yaml.load(f, Loader=yaml.FullLoader)
 
-
+with open(descrip_yaml) as f:
+    stdpydesc = yaml.load(f, Loader=yaml.FullLoader)
 
 
 class stadiumpyMain(tk.Tk):
@@ -49,6 +53,7 @@ class stadiumpyMain(tk.Tk):
     def __init__(self, *args, **kwargs):
         
         tk.Tk.__init__(self, *args, **kwargs)
+        Pmw.initialise(self) #initializing it in the root window
 
         # tk.Tk.iconbitmap(self, default="clienticon.ico")
         tk.Tk.wm_title(self, "STADIUMpy")
@@ -183,6 +188,11 @@ class StartPage(tk.Frame):
         button_mode = Button(self, text=stad_mode, command=lambda: toggle_mode(button_mode), **button_options)
 
         button_mode.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['mode']) #binding it and assigning a text to it
+
 
 
 
@@ -208,6 +218,11 @@ class StartPage(tk.Frame):
                 )
 
         button_freshstart.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['fresh_start']) #binding it and assigning a text to it
+
+
 
 
 
@@ -217,9 +232,17 @@ class StartPage(tk.Frame):
         RELY += RELHEIGHT+0.01 
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['project_name']) #binding it and assigning a text to it
+
+
+
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
         entry1.insert(0,inp['project_name'])
+
+
 
 
         ## Summary file name
@@ -227,6 +250,11 @@ class StartPage(tk.Frame):
         lbl1 = ttk.Label(self, text="SummaryFile:")
         lbl1.configure(anchor="center")
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['summary_file']) #binding it and assigning a text to it
+
 
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
@@ -247,6 +275,10 @@ class StartPage(tk.Frame):
         makeRF_lab = ttk.Label(self, text="P-RF:")
         makeRF_lab.configure(anchor="center")
         makeRF_lab.place(relx=RELXS[2], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+        ## hover description
+        makeRF_lab_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        makeRF_lab_tooltip.bind(makeRF_lab,stdpydesc['inputfile']['makeRF']) #binding it and assigning a text to it
+
 
         
         if not inp['makeRF']:
@@ -269,6 +301,11 @@ class StartPage(tk.Frame):
         makeSRF_lab.configure(anchor="center")
         makeSRF_lab.place(relx=RELXS[2], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
 
+        ## hover description
+        makeSRF_lab_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        makeSRF_lab_tooltip.bind(makeSRF_lab,stdpydesc['inputfile']['makeSRF']) #binding it and assigning a text to it
+
+
         if not inp['makeSRF']:
             makeSRFtext = "False"
             button_options = button_options_red
@@ -289,6 +326,11 @@ class StartPage(tk.Frame):
         makeSKS_lab = ttk.Label(self, text="SKS:")
         makeSKS_lab.configure(anchor="center")
         makeSKS_lab.place(relx=RELXS[2], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+
+        ## hover description
+        makeSKS_lab_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        makeSKS_lab_tooltip.bind(makeSKS_lab,stdpydesc['inputfile']['makeSKS']) #binding it and assigning a text to it
+
 
         if not inp['makeSKS']:
             makeSKStext = "False"
@@ -324,12 +366,27 @@ class StartPage(tk.Frame):
         geoMaxLatEntry.insert(0,str(maxlat))
         geoMaxLatEntry.place(relx=RELXS[3]+1.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
 
+        ## hover description
+        geoMaxLatEntry_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        geoMaxLatEntry_tooltip.bind(geoMaxLatEntry,stdpydesc['inputfile']['mxlat']) #binding it and assigning a text to it
+
+
 
         RELY += RELHEIGHT+0.01
         geoMinLonEntry = ttk.Entry(self, width=10)
         geoMaxLonEntry = ttk.Entry(self, width=10)
         geoMinLonEntry.place(relx=RELXS[3]+0.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
         geoMaxLonEntry.place(relx=RELXS[4]+0.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+
+        ## hover description
+        geoMinLonEntry_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        geoMinLonEntry_tooltip.bind(geoMinLonEntry,stdpydesc['inputfile']['mnlong']) #binding it and assigning a text to it
+
+
+        ## hover description
+        geoMaxLonEntry_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        geoMaxLonEntry_tooltip.bind(geoMaxLonEntry,stdpydesc['inputfile']['mxlong']) #binding it and assigning a text to it
+
 
 
 
@@ -343,6 +400,11 @@ class StartPage(tk.Frame):
         geoMinLatEntry.insert(0,str(minlat))
         geoMinLatEntry.place(relx=RELXS[3]+1.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
 
+        ## hover description
+        geoMinLatEntry_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        geoMinLatEntry_tooltip.bind(geoMinLatEntry,stdpydesc['inputfile']['mnlat']) #binding it and assigning a text to it
+
+
 
         if os.path.exists(image_name):
             os.remove(image_name)
@@ -355,6 +417,12 @@ class StartPage(tk.Frame):
         RELY += RELHEIGHT+0.01
         button_plotmap = ttk.Button(self, text="ExploreMap", command=showMap)
         button_plotmap.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
+
+        ## hover description
+        button_plotmap_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_plotmap_tooltip.bind(button_plotmap,stdpydesc['inputfile']['exploreMap']) #binding it and assigning a text to it
+
+
 
 ##############################################################################################
 
