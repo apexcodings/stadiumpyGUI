@@ -16,7 +16,7 @@ import platform
 import stadiumpy as stdpy
 from stadiumpy.widgets import SFrame, Button
 from stadiumpy.top_buttons import display_main_buttons
-from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, button_options_nav, button_options_back
+from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, toggle_SRF, button_options_nav, button_options_back
 
 from stadiumpy.plot_geomap import plot_map
 from PIL import ImageTk, Image
@@ -469,6 +469,11 @@ class PageRF(tk.Frame):
 
         button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
+        ## hover description
+        button_mode_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_mode_tooltip.bind(button_mode,stdpydesc['others']['goToSRF']) #binding it and assigning a text to it
+
+
         ## filenames button
         RELY += RELHEIGHT+0.01 
         def gotofilenameprf():
@@ -477,12 +482,23 @@ class PageRF(tk.Frame):
 
         button_filename.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
 
+        ## hover description
+        button_filename_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filename_tooltip.bind(button_filename,stdpydesc['PRFpage']['btnFilenamePage']) #binding it and assigning a text to it
+
+
+
         ## set h kappa
         def gotohkappaprf():
                 controller.show_frame(pageArgs[8])
         button_filename = Button(self, text="Set H-Kappa", command=gotohkappaprf, **button_options)
 
         button_filename.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
+
+        ## hover description
+        button_filename_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filename_tooltip.bind(button_filename,stdpydesc['PRFpage']['btnHKappaPage']) #binding it and assigning a text to it
+
 
         ## RF profile config
         RELY += RELHEIGHT+0.01 
@@ -493,12 +509,21 @@ class PageRF(tk.Frame):
 
         button_profile.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
 
+        ## hover description
+        button_profile_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_profile_tooltip.bind(button_profile,stdpydesc['PRFpage']['btnConfigProfilePage']) #binding it and assigning a text to it
+
+
         ## RF events search
         def gotoeventssearch():
                 controller.show_frame(pageArgs[9])
         button_evsearch = Button(self, text="Configure Events Search", command=gotoeventssearch, **button_options)
 
         button_evsearch.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
+
+        ## hover description
+        button_evsearch_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_evsearch_tooltip.bind(button_evsearch,stdpydesc['PRFpage']['btnEvtSearchPage']) #binding it and assigning a text to it
         
         ## RF filter
         RELY += RELHEIGHT+0.01 
@@ -507,6 +532,11 @@ class PageRF(tk.Frame):
         button_filter = Button(self, text="Set Filter", command=gotofiltersettings, **button_options)
 
         button_filter.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
+
+        ## hover description
+        button_filter_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filter_tooltip.bind(button_filter,stdpydesc['PRFpage']['btnSetFilterPage']) #binding it and assigning a text to it
+        
         
         ## RF filter
         def gotofplotsettings():
@@ -514,6 +544,11 @@ class PageRF(tk.Frame):
         button_filter = Button(self, text="Configure RF plot", command=gotofplotsettings, **button_options)
 
         button_filter.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
+
+        ## hover description
+        button_filter_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filter_tooltip.bind(button_filter,stdpydesc['PRFpage']['btnConfigRFPlotPage']) #binding it and assigning a text to it
+        
 
 
 ##############################################################################################
@@ -560,6 +595,11 @@ class PageSRF(tk.Frame):
         button_mode = Button(self, text=stad_mode, command=lambda: toggle_SRF(button_mode, controller, pageArgs), **button_optionsSecondary)
 
         button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+        ## hover description
+        button_mode_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_mode_tooltip.bind(button_mode,stdpydesc['others']['goToPRF']) #binding it and assigning a text to it
+
 ##############################################################################################
 
 
@@ -840,6 +880,12 @@ class PRF_filenames(tk.Frame):
 
         button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
+
+        ## hover description
+        button_mode_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_mode_tooltip.bind(button_mode,stdpydesc['others']['backBtn']) #binding it and assigning a text to it
+        
+
         ###########################################
         lbl1 = ttk.Label(self, text="Filenames:", **labHeadOptions, relief=RIDGE)
         RELY += RELHEIGHT+0.01 
@@ -854,6 +900,12 @@ class PRF_filenames(tk.Frame):
             lbl1 = ttk.Label(self, text=filename_vars[kk]+":", **label_options)
             lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][filename_vars[kk]]) #binding it and assigning a text to it
+            
+
+
             entry1 = ttk.Entry(self)
             entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
             entry1.insert(0,filename_vals[kk])
@@ -863,6 +915,11 @@ class PRF_filenames(tk.Frame):
             ##
             lbl1 = ttk.Label(self, text=filename_vars[kk]+":", **label_options)
             lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][filename_vars[kk]]) #binding it and assigning a text to it
+            
 
             entry1 = ttk.Entry(self)
             entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -938,6 +995,11 @@ class PRF_hkappa(tk.Frame):
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][hkappa_vars[kk]]) #binding it and assigning a text to it
+        
+
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
         entry1.insert(0,hkappa_vals[kk])
@@ -949,6 +1011,11 @@ class PRF_hkappa(tk.Frame):
         RELY += RELHEIGHT+0.01 #new line
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][hkappa_vars[kk]]) #binding it and assigning a text to it
+  
 
 
         frsttext, button_options = button_init(hkappa_vals[kk])
@@ -964,7 +1031,10 @@ class PRF_hkappa(tk.Frame):
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
-
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][hkappa_vars[kk]]) #binding it and assigning a text to it
+  
         frsttext, button_options = button_init(hkappa_vals[kk])
         button_hkappa2 = Button(self, 
                 text=frsttext,
@@ -1033,6 +1103,11 @@ class PRF_profileconfig(tk.Frame):
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][hkappa_vars[kk]]) #binding it and assigning a text to it
+ 
+
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
         entry1.insert(0,hkappa_vals[kk])
@@ -1043,6 +1118,10 @@ class PRF_profileconfig(tk.Frame):
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[1]+halfCellX+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
 
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][hkappa_vars[kk]]) #binding it and assigning a text to it
+ 
 
         entry1 = ttk.Entry(self)
         entry1.insert(0,hkappa_vals[kk])
@@ -1053,6 +1132,10 @@ class PRF_profileconfig(tk.Frame):
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[3]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
 
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][hkappa_vars[kk]]) #binding it and assigning a text to it
+ 
 
         entry1 = ttk.Entry(self)
         entry1.insert(0,hkappa_vals[kk])
@@ -1119,6 +1202,12 @@ class PRF_eventsSearch(tk.Frame):
                 lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][evsearch_vars[kk]]) #binding it and assigning a text to it
+        
+
+
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
                 entry1.insert(0,evsearch_vals[kk])
@@ -1127,6 +1216,11 @@ class PRF_eventsSearch(tk.Frame):
                 ##
                 lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+                
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][evsearch_vars[kk]]) #binding it and assigning a text to it
+        
 
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -1184,6 +1278,7 @@ class PRF_filter(tk.Frame):
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
 
 
+
         ##
         evsearch_vars = list(adv_prf['rf_filter_settings'].keys())
         evsearch_vals = list(adv_prf['rf_filter_settings'].values())
@@ -1193,6 +1288,9 @@ class PRF_filter(tk.Frame):
                 RELY += RELHEIGHT+0.01 
                 lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][evsearch_vars[kk]]) #binding it and assigning a text to it
 
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -1202,6 +1300,9 @@ class PRF_filter(tk.Frame):
                 ##
                 lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][evsearch_vars[kk]]) #binding it and assigning a text to it
 
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -1268,6 +1369,10 @@ class PRF_display(tk.Frame):
                 RELY += RELHEIGHT+0.01 
                 lbl1 = ttk.Label(self, text=display_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][display_vars[kk]]) #binding it and assigning a text to it
+
 
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -1277,6 +1382,9 @@ class PRF_display(tk.Frame):
                 ##
                 lbl1 = ttk.Label(self, text=display_vars[kk]+":", **label_options)
                 lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][display_vars[kk]]) #binding it and assigning a text to it
 
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -1300,6 +1408,9 @@ class PRF_display(tk.Frame):
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][plotting_vars[kk]]) #binding it and assigning a text to it
 
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -1309,6 +1420,9 @@ class PRF_display(tk.Frame):
         ##
         lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][plotting_vars[kk]]) #binding it and assigning a text to it
 
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
@@ -1318,6 +1432,9 @@ class PRF_display(tk.Frame):
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][plotting_vars[kk]]) #binding it and assigning a text to it
 
         frsttext, button_options = button_init(plotting_vals[kk])
         button_good_bad = Button(self, 
@@ -1335,6 +1452,9 @@ class PRF_display(tk.Frame):
         ##
         lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['rfparams'][plotting_vars[kk]]) #binding it and assigning a text to it
 
         frsttext, button_options = button_init(plotting_vals[kk])
         button_good_bad2 = Button(self, 

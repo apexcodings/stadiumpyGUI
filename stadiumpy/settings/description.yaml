@@ -1,3 +1,7 @@
+others:
+  goToSRF: navigate to the S-P receiver function page
+  goToPRF: navigate to the P-S receiver function page
+  backBtn: back to the previous page
 inputfile:
   project_name: Folder name for the current project.
   mode: Select mode to run the STADIUMpy
@@ -11,6 +15,14 @@ inputfile:
   mnlat: Minimum latitude of the selected region.
   mxlat: Maximum latitude of the selected region.
   exploreMap: Select the region with the assistance of map.
+
+PRFpage:
+  btnFilenamePage: Change the output filenames for RF computations
+  btnHKappaPage: Change the H-Kappa computation settings
+  btnConfigProfilePage: Configure the output profile of the RF computations
+  btnEvtSearchPage: Event search settings for the RF computations
+  btnSetFilterPage: Set the filter parameters for RF computations
+  btnConfigRFPlotPage: Configure the output RF plot
 dirnames:
   RFdatafileloc: Directory for the P-RF H5 data.
   RFinfoloc: Directory for the P-RF station and event information.
