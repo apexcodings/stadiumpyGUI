@@ -1,0 +1,35 @@
+filenames:
+  RFsta: all_stations_RF.txt
+  data_rf_suffix: rf_profile_data
+  events_map_suffix: RF-events_map
+  invRFfile: rf_stations.xml
+  retr_station_prefix: RF_stations
+  retr_stations: all_stations_rf_retrieved.txt
+  rf_compute_data_suffix: rf_profile_rfs
+  rfprofile_compute_result_prefix: rf_profile_profile
+h_kappa_settings:
+  h_kappa_res_file: h-kappa-values.txt
+  plot_h: 1
+  plot_kappa: 1
+rf_display_settings:
+  rf_info: default
+  trace_height: 0.1
+  trim_max: 20
+  trim_min: -5
+rf_event_search_settings:
+  maxmagnitudeRF: 9.5
+  maxradiusRF: 90
+  minmagnitudeRF: 5.5
+  minradiusRF: 30
+rf_filter_settings:
+  maxfreq: 2.0
+  minfreq: 0.5
+rf_plotting_settings:
+  maxampRF: 0.95
+  plot_bad_RF: 1
+  plot_good_RF: 1
+  signalrf: 1.0
+rf_profile_settings:
+  num_profile_divs_lat: 1
+  num_profile_divs_lon: 1
+  ppdepth: 40

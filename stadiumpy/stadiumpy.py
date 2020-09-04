@@ -16,12 +16,14 @@ import platform
 import stadiumpy as stdpy
 from stadiumpy.widgets import SFrame, Button
 from stadiumpy.top_buttons import display_main_buttons
-from stadiumpy.styles import button_options_red, button_options_green, toggle_mode, toggle_button, button_init, toggle_PRF, toggle_SRF, button_options_nav, button_options_back
+from stadiumpy.styles import *
 
 from stadiumpy.plot_geomap import plot_map
 from PIL import ImageTk, Image
 from tkinter import messagebox
 import Pmw
+import ast
+
 print("Hello from", __name__)
 
 cachedirec=".cache"
@@ -34,6 +36,11 @@ image_name = os.path.join('.cache', 'region-plot.png')
 inp_file_yaml = os.path.join(stdpy.__path__[0], 'settings', 'input_file.yaml')
 adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advRFparam.yaml')
 descrip_yaml = os.path.join(stdpy.__path__[0], 'settings', 'description.yaml')
+
+## User defined
+USER_adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_advRFparam.yaml')
+USER_inp_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_input_file.yaml')
+
 # adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advancedRF.yaml')
 # inp_file_yaml = 'settings/input_file.yaml'
 
@@ -71,10 +78,6 @@ class stadiumpyMain(tk.Tk):
         else:
             style.configure('W.TButton', font = fontOSX,  borderwidth = '2', background="#c8ccc9")
 
-
-
-        ## style for all buttons
-        # style.configure('TButton', font = ('calibri', 16, 'bold'),  borderwidth = '2') 
         
         ## TOP frame
         container = tk.Frame(self, relief=RAISED, borderwidth=1)
@@ -85,12 +88,11 @@ class stadiumpyMain(tk.Tk):
 
         self.frames = {}
         
-        stadium_pages = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion,
-         PageSRF, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig,
-         PRF_filter, PRF_display)
-        # stadium_pages = (StartPage, PageRF, PageSRF, PageDataEnquiry, PageSKS, PageControl, PageGeoRegion,
-        #     ResultsSummary, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig,
-        #     PRF_filter, PRF_display)
+        ## all the pages in the app
+        stadium_pages = (StartPage, PageDataEnquiry, PageRF, PageSKS, ProjectDir, PageGeoRegion,
+         PageSRF, PRF_filenames, PRF_hkappa, PRF_profileconfig, PRF_eventsSearch,
+         PRF_filter, PRF_display, RFdirectoryStructure)
+
         for F in stadium_pages:
 
             frame = F(container, self)
@@ -98,6 +100,7 @@ class stadiumpyMain(tk.Tk):
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
+        #displays the StartPage when the app opens
         self.show_frame(StartPage)
 
         ## Bottom frame
@@ -106,15 +109,43 @@ class stadiumpyMain(tk.Tk):
 
         closeButton = ttk.Button(container2, text="Close", command=self._quit,style = 'W.TButton')
         closeButton.pack(side="right", padx=5, pady=5)
-
+        ############### RUN function###################
         def runStadiumpy():
             print("Run Stadiumpy")
-            print(self.frames[PRF_filenames].getOutput())
-            # print(self.frames[PRF_filenames].outputDict)
 
-            # out = PRF_filenames.get_output()
-            # out = prf_filename(self, ttk, parent, controller, adv_prf, *pageArgsOut())
-            # print(out)
+            inpFile_dict = self.frames[StartPage].getOutput()
+            
+            inpYML = open(USER_inp_yaml, "w")
+            yaml.dump(inpFile_dict,inpYML)
+            inpYML.close()
+
+
+            advPRF_dict = {}
+            prf_filenames_dict = self.frames[PRF_filenames].getOutput()
+            advPRF_dict["filenames"] = prf_filenames_dict
+
+            prf_hkappa_dict = self.frames[PRF_hkappa].getOutput()
+            advPRF_dict["h_kappa_settings"] = prf_hkappa_dict
+
+            prf_profile_dict = self.frames[PRF_profileconfig].getOutput()
+            advPRF_dict["rf_profile_settings"] = prf_profile_dict
+
+            prf_evsearch_dict = self.frames[PRF_eventsSearch].getOutput()
+            advPRF_dict["rf_event_search_settings"] = prf_evsearch_dict
+
+            prf_filter_dict = self.frames[PRF_filter].getOutput()
+            advPRF_dict["rf_filter_settings"] = prf_filter_dict
+            
+            prf_display_dict = self.frames[PRF_display].getOutput1()
+            advPRF_dict["rf_display_settings"] = prf_display_dict
+            
+            prf_plotting_dict = self.frames[PRF_display].getOutput2()
+            advPRF_dict["rf_plotting_settings"] = prf_plotting_dict
+
+            prfADVYML = open(USER_adv_prf_yaml, "w")
+            yaml.dump(advPRF_dict,prfADVYML)
+            prfADVYML.close()
+            
 
         runButton = ttk.Button(container2,style = 'W.TButton', text="Run", command=runStadiumpy)
         runButton.pack(side="left", padx=5, pady=5)
@@ -132,9 +163,9 @@ class stadiumpyMain(tk.Tk):
 ##############################################################################################
 def pageArgsOut():
     # pageArgs = (StartPage, PageControl)
-    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ResultsSummary, PageGeoRegion,
+    pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ProjectDir, PageGeoRegion,
          PageSRF, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig,
-         PRF_filter, PRF_display)
+         PRF_filter, PRF_display, RFdirectoryStructure)
     return pageArgs
 
 
@@ -169,7 +200,7 @@ class StartPage(tk.Frame):
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=0)
 
-
+        self.outputDict = {}
         RELY0 = RELY
         ## Mode
 
@@ -188,13 +219,11 @@ class StartPage(tk.Frame):
         button_mode = Button(self, text=stad_mode, command=lambda: toggle_mode(button_mode), **button_options)
 
         button_mode.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        self.outputDict['mode'] = get_toggle_output(button_mode)
         
         ## hover description
         lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
         lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['mode']) #binding it and assigning a text to it
-
-
-
 
         ## fresh start
         RELY += RELHEIGHT+0.01 
@@ -218,12 +247,11 @@ class StartPage(tk.Frame):
                 )
 
         button_freshstart.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        self.outputDict['fresh_start'] = get_toggle_output(button_freshstart)
+
         ## hover description
         lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
         lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['fresh_start']) #binding it and assigning a text to it
-
-
-
 
 
         ## Project name
@@ -241,8 +269,7 @@ class StartPage(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
         entry1.insert(0,inp['project_name'])
-
-
+        self.outputDict['project_name'] = entry1
 
 
         ## Summary file name
@@ -259,6 +286,7 @@ class StartPage(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
         entry1.insert(0,inp['summary_file'])
+        self.outputDict['summary_file'] = entry1
 
 
 
@@ -294,6 +322,8 @@ class StartPage(tk.Frame):
             **button_options
             )
         button_makerf.place(relx=RELXS[2]+(RELXS[2]-RELXS[1])/2+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        self.outputDict['makeRF'] = get_toggle_output(button_makerf)
+
 
         # makeRF-S
         RELY += RELHEIGHT+0.01
@@ -319,7 +349,7 @@ class StartPage(tk.Frame):
             **button_options
             )
         button_makesrf.place(relx=RELXS[2]+(RELXS[3]-RELXS[2])/2+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
-
+        self.outputDict['makeSRF'] = get_toggle_output(button_makerf)
 
         # makeSKS
         RELY += RELHEIGHT+0.01
@@ -346,6 +376,7 @@ class StartPage(tk.Frame):
             **button_options
             )
         button_makesks.place(relx=RELXS[2]+(RELXS[3]-RELXS[2])/2+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        self.outputDict['makeSKS'] = get_toggle_output(button_makesks)
 
         #Geographic Region
         RELY=RELY0
@@ -365,6 +396,7 @@ class StartPage(tk.Frame):
         geoMaxLatEntry = ttk.Entry(self, width=10)
         geoMaxLatEntry.insert(0,str(maxlat))
         geoMaxLatEntry.place(relx=RELXS[3]+1.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+        self.outputDict['mxlat'] = geoMaxLatEntry
 
         ## hover description
         geoMaxLatEntry_tooltip = Pmw.Balloon(self) #Calling the tooltip
@@ -377,6 +409,8 @@ class StartPage(tk.Frame):
         geoMaxLonEntry = ttk.Entry(self, width=10)
         geoMinLonEntry.place(relx=RELXS[3]+0.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
         geoMaxLonEntry.place(relx=RELXS[4]+0.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+        self.outputDict['mnlong'] = geoMinLonEntry
+        self.outputDict['mxlong'] = geoMaxLonEntry
 
         ## hover description
         geoMinLonEntry_tooltip = Pmw.Balloon(self) #Calling the tooltip
@@ -388,8 +422,6 @@ class StartPage(tk.Frame):
         geoMaxLonEntry_tooltip.bind(geoMaxLonEntry,stdpydesc['inputfile']['mxlong']) #binding it and assigning a text to it
 
 
-
-
         geoMinLonEntry.insert(0,str(minlon))
         geoMaxLonEntry.insert(0,str(maxlon))
         # plotmapRELY = RELY
@@ -399,29 +431,50 @@ class StartPage(tk.Frame):
         geoMinLatEntry = ttk.Entry(self, width=10)
         geoMinLatEntry.insert(0,str(minlat))
         geoMinLatEntry.place(relx=RELXS[3]+1.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
+        self.outputDict['mnlat'] = geoMinLatEntry
 
         ## hover description
         geoMinLatEntry_tooltip = Pmw.Balloon(self) #Calling the tooltip
         geoMinLatEntry_tooltip.bind(geoMinLatEntry,stdpydesc['inputfile']['mnlat']) #binding it and assigning a text to it
 
-
-
         if os.path.exists(image_name):
             os.remove(image_name)
-
 
 
         def showMap():
             controller.show_frame(pageArgs[5])
 
         RELY += RELHEIGHT+0.01
+        ## Project Dir
+        lbl1 = ttk.Label(self, text="Project Location:")
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['summary_file']) #binding it and assigning a text to it
+
+
+        entry1 = ttk.Entry(self)
+        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        entry1.insert(0,inp['summary_file'])
+        self.outputDict['summary_file'] = entry1
+
         button_plotmap = ttk.Button(self, text="ExploreMap", command=showMap)
         button_plotmap.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
 
         ## hover description
         button_plotmap_tooltip = Pmw.Balloon(self) #Calling the tooltip
         button_plotmap_tooltip.bind(button_plotmap,stdpydesc['inputfile']['exploreMap']) #binding it and assigning a text to it
-
+    
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            try:
+                outputResult[key] = convert_input(value.get())
+            except:
+                outputResult[key] = value
+        return outputResult
 
 
 ##############################################################################################
@@ -676,7 +729,6 @@ class PageGeoRegion(tk.Frame):
         RELY += RELHEIGHT
 
         
-
         RELY += 0.01
         RELYmapwidth = RELY
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT*3, relwidth=RELWIDTH)
@@ -691,7 +743,6 @@ class PageGeoRegion(tk.Frame):
         geoMaxLonEntry = ttk.Entry(self, width=10)
         geoMinLonEntry.place(relx=RELXS[2]/2, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
         geoMaxLonEntry.place(relx=RELXS[4]/2, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
-
 
 
         geoMinLonEntry.insert(0,str(minlon))
@@ -824,7 +875,7 @@ class PageGeoRegion(tk.Frame):
         button_plotmap.place(relx=RELXS[4], rely=plotmapRELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
         
 ##############################################################################################
-class ResultsSummary(tk.Frame):
+class ProjectDir(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -990,6 +1041,7 @@ class PRF_hkappa(tk.Frame):
         hkappa_vars = list(adv_prf['h_kappa_settings'].keys())
         hkappa_vals = list(adv_prf['h_kappa_settings'].values())
 
+        self.outputDict = {}
         RELY += RELHEIGHT+0.01 #new line
         kk = 0
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
@@ -1003,6 +1055,7 @@ class PRF_hkappa(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
         entry1.insert(0,hkappa_vals[kk])
+        self.outputDict[hkappa_vars[kk]] = entry1
 
         ##
 
@@ -1025,7 +1078,8 @@ class PRF_hkappa(tk.Frame):
                 **button_options
                 )
         button_hkappa1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-
+        self.outputDict[hkappa_vars[kk]] = get_toggle_output(button_hkappa1)
+        # print(frsttext)
 
         kk+=1
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
@@ -1042,7 +1096,17 @@ class PRF_hkappa(tk.Frame):
                 **button_options
                 )
         button_hkappa2.place(relx=RELXS[3]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+        self.outputDict[hkappa_vars[kk]] = get_toggle_output(button_hkappa2)
 
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            try:
+                outputResult[key] = value.get()
+            except:
+                outputResult[key] = value
+
+        return outputResult
 
 ##############################################################################################
 class PRF_profileconfig(tk.Frame):
@@ -1054,7 +1118,6 @@ class PRF_profileconfig(tk.Frame):
         RELHEIGHT, RELWIDTH = 0.05, 0.2
         RELXS = np.linspace(0,1,6)
         drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
         halfCellX = (RELXS[2]-RELXS[1])/2
 
         # topcanvas = tk.Canvas(self)
@@ -1066,7 +1129,6 @@ class PRF_profileconfig(tk.Frame):
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
         button_options = {**button_options, **fontDict}
-
 
 
         labHeadOptions = {"font":('calibri', 18, 'bold'), "anchor":"center"}
@@ -1098,6 +1160,7 @@ class PRF_profileconfig(tk.Frame):
         hkappa_vars = list(adv_prf['rf_profile_settings'].keys())
         hkappa_vals = list(adv_prf['rf_profile_settings'].values())
 
+        self.outputDict = {}
         RELY += RELHEIGHT+0.01 #new line
         kk = 0
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
@@ -1111,6 +1174,7 @@ class PRF_profileconfig(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
         entry1.insert(0,hkappa_vals[kk])
+        self.outputDict[hkappa_vars[kk]] = entry1
 
         ##
 
@@ -1126,7 +1190,7 @@ class PRF_profileconfig(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.insert(0,hkappa_vals[kk])
         entry1.place(relx=RELXS[2]+drelx+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
-
+        self.outputDict[hkappa_vars[kk]] = entry1
 
         kk+=1
         lbl1 = ttk.Label(self, text=hkappa_vars[kk]+":", **label_options)
@@ -1140,7 +1204,16 @@ class PRF_profileconfig(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.insert(0,hkappa_vals[kk])
         entry1.place(relx=RELXS[4]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        self.outputDict[hkappa_vars[kk]] = entry1
 
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            try:
+                outputResult[key] = convert_input(value.get())
+            except:
+                outputResult[key] = value
+        return outputResult
 
 ##############################################################################################
 class PRF_eventsSearch(tk.Frame):
@@ -1197,6 +1270,7 @@ class PRF_eventsSearch(tk.Frame):
         evsearch_vals = list(adv_prf['rf_event_search_settings'].values())
 
         kk=0
+        self.outputDict = {}
         while kk<len(evsearch_vars):
                 RELY += RELHEIGHT+0.01 
                 lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
@@ -1211,6 +1285,8 @@ class PRF_eventsSearch(tk.Frame):
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
                 entry1.insert(0,evsearch_vals[kk])
+                self.outputDict[evsearch_vars[kk]] = entry1
+
                 kk+=1
 
                 ##
@@ -1225,8 +1301,17 @@ class PRF_eventsSearch(tk.Frame):
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
                 entry1.insert(0,evsearch_vals[kk])
+                self.outputDict[evsearch_vars[kk]] = entry1
                 kk+=1
-        
+
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            try:
+                outputResult[key] = ast.literal_eval(value.get())
+            except:
+                outputResult[key] = value
+        return outputResult
 
 ##############################################################################################
 class PRF_filter(tk.Frame):
@@ -1284,6 +1369,7 @@ class PRF_filter(tk.Frame):
         evsearch_vals = list(adv_prf['rf_filter_settings'].values())
 
         kk=0
+        self.outputDict = {}
         while kk<len(evsearch_vars):
                 RELY += RELHEIGHT+0.01 
                 lbl1 = ttk.Label(self, text=evsearch_vars[kk]+":", **label_options)
@@ -1295,6 +1381,7 @@ class PRF_filter(tk.Frame):
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
                 entry1.insert(0,evsearch_vals[kk])
+                self.outputDict[evsearch_vars[kk]] = entry1
                 kk+=1
 
                 ##
@@ -1307,8 +1394,16 @@ class PRF_filter(tk.Frame):
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
                 entry1.insert(0,evsearch_vals[kk])
+                self.outputDict[evsearch_vars[kk]] = entry1
                 kk+=1
-        
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            try:
+                outputResult[key] = ast.literal_eval(value.get())
+            except:
+                outputResult[key] = value
+        return outputResult
 
 ##############################################################################################
 class PRF_display(tk.Frame):
@@ -1365,6 +1460,7 @@ class PRF_display(tk.Frame):
         display_vals = list(adv_prf['rf_display_settings'].values())
 
         kk=0
+        self.outputDict1 = {}
         while kk<len(display_vars):
                 RELY += RELHEIGHT+0.01 
                 lbl1 = ttk.Label(self, text=display_vars[kk]+":", **label_options)
@@ -1377,6 +1473,7 @@ class PRF_display(tk.Frame):
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
                 entry1.insert(0,display_vals[kk])
+                self.outputDict1[display_vars[kk]] = entry1
                 kk+=1
 
                 ##
@@ -1389,6 +1486,7 @@ class PRF_display(tk.Frame):
                 entry1 = ttk.Entry(self)
                 entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
                 entry1.insert(0,display_vals[kk])
+                self.outputDict1[display_vars[kk]] = entry1
                 kk+=1
         
         
@@ -1405,6 +1503,7 @@ class PRF_display(tk.Frame):
         plotting_vals = list(adv_prf['rf_plotting_settings'].values())
 
         kk=0
+        self.outputDict2 = {}
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text=plotting_vars[kk]+":", **label_options)
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
@@ -1415,6 +1514,7 @@ class PRF_display(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
         entry1.insert(0,plotting_vals[kk])
+        self.outputDict2[plotting_vars[kk]] = entry1
         kk+=1
 
         ##
@@ -1427,6 +1527,7 @@ class PRF_display(tk.Frame):
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
         entry1.insert(0,plotting_vals[kk])
+        self.outputDict2[plotting_vars[kk]] = entry1
         kk+=1
 
         RELY += RELHEIGHT+0.01 
@@ -1443,10 +1544,9 @@ class PRF_display(tk.Frame):
                 **button_options
                 )
         button_good_bad.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+        self.outputDict2[plotting_vars[kk]] = get_toggle_output(button_good_bad)
 
-        # entry1 = ttk.Entry(self)
-        # entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-        # entry1.insert(0,plotting_vals[kk])
+
         kk+=1
 
         ##
@@ -1463,11 +1563,42 @@ class PRF_display(tk.Frame):
                 **button_options
                 )
         button_good_bad2.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
-
+        self.outputDict2[plotting_vars[kk]] = get_toggle_output(button_good_bad2)
+    
+    def getOutput1(self):
+        outputResult = {}
+        for key, value in self.outputDict1.items():
+            try:
+                outputResult[key] = convert_input(value.get())
+            except:
+                outputResult[key] = value.get()
+        return outputResult
+    def getOutput2(self):
+        outputResult = {}
+        for key, value in self.outputDict2.items():
+            try:
+                outputResult[key] = ast.literal_eval(value.get())
+            except:
+                outputResult[key] = value
+        return outputResult
         
 
 ##############################################################################################
-        
+class RFdirectoryStructure(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        pageArgs = pageArgsOut()
+        RELY = 0
+        RELHEIGHT, RELWIDTH = 0.05, 0.2
+        RELXS = np.linspace(0,1,6)
+        drelx = 0.01
+
+
+        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=4)
+
+
+##############################################################################################
 
 app = stadiumpyMain()
 app.mainloop()

@@ -30,12 +30,12 @@ button_options_back = {
 button_options_nav = { "borderwidth":1, "font":('calibri', 16, 'bold'), "fg":"black"}
 
 
-os_platform = platform.system()
+os_platform_styles = platform.system()
 
-if os_platform is "Darwin":
+if os_platform_styles is "Darwin":
     topbuttons_options = {"borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised"}
     topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
-elif os_platform is "Linux":
+elif os_platform_styles is "Linux":
     topbuttons_options = {"borderwidth":1, "font":('calibri', 10, 'bold'), "relief":"raised"}
     topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 10, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
 else:
@@ -66,10 +66,35 @@ def toggle_button(button):
         dictAdd = {'text':'False', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
         for key, value in dictAdd.items():
             button[key]=value
+        output = 1 
     else:
         dictAdd = {'text':'True', 'bg':'#ADEFD1', 'fg': '#00203F'}
         for key, value in dictAdd.items():
             button[key]=value
+        output = 0
+    return output
+
+def get_toggle_output(button):
+    if button['text'] == 'True':
+        output = 1 
+    else:
+        output = 0
+    return output
+
+import ast
+def convert_input(value):
+    try:
+        if isinstance(value, str):
+            try:
+                output = ast.literal_eval(value)
+            except:
+                output = value
+
+        else:
+            output = ast.literal_eval(value)
+    except:
+        output = value
+    return output
 
 
 def button_init(hkappa_val):

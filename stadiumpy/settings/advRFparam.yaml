@@ -32,6 +32,7 @@ rf_display_settings:
   trim_min: -5 #trim stream relative to onset before plotting
   trim_max: 20 #trim stream relative to onset before plotting
   rf_info: default #additional axes for RF plot, None for no additional axes
+  
 rf_plotting_settings:
   signalrf: 1.0
   maxampRF: 0.95

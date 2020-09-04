@@ -24,10 +24,10 @@ def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *page
                         command=lambda: controller.show_frame(pageArgs[3]))
 
     ## 
-    ressum_button = Button(self, text="Results Summary",
+    projdir_button = Button(self, text="Project Directory",
                         command=lambda: controller.show_frame(pageArgs[4]))
 
-    buttons = [stpg_button, dataenquiry_btn, prf_button, sks_button, ressum_button]
+    buttons = [stpg_button, dataenquiry_btn, prf_button, sks_button, projdir_button]
     for i in range(len(buttons)):
         if i==disabledBtn:
             buttons[i].configure(**topbuttons_options_selected)
