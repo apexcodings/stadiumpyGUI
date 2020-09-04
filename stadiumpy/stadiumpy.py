@@ -269,6 +269,21 @@ class StartPage(tk.Frame):
         lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
         lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['fresh_start']) #binding it and assigning a text to it
 
+        ## Project Dir
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text="ProjectLocation:")
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['project_dir_loc']) #binding it and assigning a text to it
+
+
+        entry1 = ttk.Entry(self)
+        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        entry1.insert(0,inp['project_dir_loc'])
+        self.outputDict['project_dir_loc'] = entry1
 
         ## Project name
         lbl1 = ttk.Label(self, text="ProjectName:")
@@ -440,7 +455,6 @@ class StartPage(tk.Frame):
 
         geoMinLonEntry.insert(0,str(minlon))
         geoMaxLonEntry.insert(0,str(maxlon))
-        # plotmapRELY = RELY
 
         # ##
         RELY += RELHEIGHT+0.01
@@ -461,21 +475,7 @@ class StartPage(tk.Frame):
             controller.show_frame(pageArgs[5])
 
         RELY += RELHEIGHT+0.01
-        ## Project Dir
-        lbl1 = ttk.Label(self, text="ProjectLocation:")
-        lbl1.configure(anchor="center")
-        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-        ## hover description
-        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
-        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['project_dir_loc']) #binding it and assigning a text to it
-
-
-        entry1 = ttk.Entry(self)
-        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-        entry1.insert(0,inp['project_dir_loc'])
-        self.outputDict['project_dir_loc'] = entry1
-
+        
         button_plotmap = ttk.Button(self, text="ExploreMap", command=showMap)
         button_plotmap.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
 

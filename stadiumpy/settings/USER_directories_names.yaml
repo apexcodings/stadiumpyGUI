@@ -5,3 +5,10 @@ RFinfoloc: InfoRF/
 RFplotloc: ImagesRF/RFplots/
 RFprofilemaploc: ImagesRF/Profile/
 RFstaevnloc: ImagesRF/STA_EV/
+SFIndRejplotloc: ImagesSRF/SRF-plot/Rejected/
+SFIndplotloc: ImagesSRF/SRF-plot/
+SFdatafileloc: dataSRF/
+SFinfoloc: InfoSRF/
+SFplotloc: ImagesSRF/SRFplots/
+SFprofilemaploc: ImagesSRF/Profile/
+SFstaevnloc: ImagesSRF/STA_EV/
