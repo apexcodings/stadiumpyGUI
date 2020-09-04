@@ -29,6 +29,12 @@ button_options_back = {
             }
 button_options_nav = { "borderwidth":1, "font":('calibri', 16, 'bold'), "fg":"black"}
 
+button_options = button_options_back 
+fontDict = {"font":('calibri', 12, 'bold')}
+button_options_BACK = {**button_options, **fontDict}
+
+labHeadOptions = {"font":('calibri', 18, 'bold'), "anchor":"center"}
+label_options = {"font":('calibri', 12, 'normal')}
 
 os_platform_styles = platform.system()
 
@@ -105,3 +111,22 @@ def button_init(hkappa_val):
         frsttext = "True"
         button_options = button_options_green
     return frsttext, button_options
+
+
+import os
+
+def list_files(startpath):
+    outputLists = []
+    for root, dirs, files in os.walk(startpath):
+        rootCheck = root.replace(startpath, '')
+        if not rootCheck.startswith('.') and not rootCheck.startswith('__'):
+            # print('{}{}/'.format(indent, os.path.basename(root)))
+            if not os.path.basename(root).startswith('__'):
+                level = root.replace(startpath, '').count(os.sep)
+                indent = '-> ' * 8 * (level)
+                outputLists.append('{}{}/'.format(indent, os.path.basename(root)))
+                subindent = '-  ' * 8 * (level + 1)
+                for f in files:
+                    if not f.startswith('.'):
+                        outputLists.append('{}{}'.format(subindent, f))
+    return outputLists

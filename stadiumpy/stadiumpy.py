@@ -24,7 +24,7 @@ from tkinter import messagebox
 import Pmw
 import ast
 
-print("Hello from", __name__)
+# print("Hello from", __name__)
 
 cachedirec=".cache"
 if not os.path.exists(cachedirec):
@@ -36,17 +36,16 @@ image_name = os.path.join('.cache', 'region-plot.png')
 inp_file_yaml = os.path.join(stdpy.__path__[0], 'settings', 'input_file.yaml')
 adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advRFparam.yaml')
 descrip_yaml = os.path.join(stdpy.__path__[0], 'settings', 'description.yaml')
+direc_yaml = os.path.join(stdpy.__path__[0], 'settings', 'directories_names.yaml')
 
 ## User defined
 USER_adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_advRFparam.yaml')
 USER_inp_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_input_file.yaml')
+USER_direc_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_directories_names.yaml')
 
-# adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advancedRF.yaml')
-# inp_file_yaml = 'settings/input_file.yaml'
 
 with open(inp_file_yaml) as f:
     inp = yaml.load(f, Loader=yaml.FullLoader)
-
 
 with open(adv_prf_yaml) as f:
     adv_prf = yaml.load(f, Loader=yaml.FullLoader)
@@ -54,6 +53,11 @@ with open(adv_prf_yaml) as f:
 with open(descrip_yaml) as f:
     stdpydesc = yaml.load(f, Loader=yaml.FullLoader)
 
+with open(USER_inp_yaml) as f:
+    user_inp = yaml.load(f, Loader=yaml.FullLoader)
+
+with open(direc_yaml) as f:
+    direcDict = yaml.load(f, Loader=yaml.FullLoader)
 
 class stadiumpyMain(tk.Tk):
 
@@ -91,7 +95,8 @@ class stadiumpyMain(tk.Tk):
         ## all the pages in the app
         stadium_pages = (StartPage, PageDataEnquiry, PageRF, PageSKS, ProjectDir, PageGeoRegion,
          PageSRF, PRF_filenames, PRF_hkappa, PRF_profileconfig, PRF_eventsSearch,
-         PRF_filter, PRF_display, RFdirectoryStructure)
+         PRF_filter, PRF_display, PRFdirectoryStructure, SRFdirectoryStructure, 
+         ProjectTreeStructure)
 
         for F in stadium_pages:
 
@@ -113,13 +118,23 @@ class stadiumpyMain(tk.Tk):
         def runStadiumpy():
             print("Run Stadiumpy")
 
+            ## write homepage inputs from GUI
             inpFile_dict = self.frames[StartPage].getOutput()
             
             inpYML = open(USER_inp_yaml, "w")
             yaml.dump(inpFile_dict,inpYML)
             inpYML.close()
 
+            ## write directories from GUI
+            direc_user_prf_dict = self.frames[PRFdirectoryStructure].getOutput()
+            direc_user_srf_dict = self.frames[SRFdirectoryStructure].getOutput()
 
+            with open(USER_direc_yaml, "w") as direcYML:
+                yaml.dump(direc_user_prf_dict,direcYML)
+                yaml.dump(direc_user_srf_dict,direcYML)
+
+
+            ## write advanced PRF inputs from GUI
             advPRF_dict = {}
             prf_filenames_dict = self.frames[PRF_filenames].getOutput()
             advPRF_dict["filenames"] = prf_filenames_dict
@@ -159,15 +174,14 @@ class stadiumpyMain(tk.Tk):
         root.quit()     # stops mainloop
         root.destroy()  # this is necessary on Windows to prevent
 
-
 ##############################################################################################
 def pageArgsOut():
     # pageArgs = (StartPage, PageControl)
     pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ProjectDir, PageGeoRegion,
          PageSRF, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig,
-         PRF_filter, PRF_display, RFdirectoryStructure)
+         PRF_filter, PRF_display, PRFdirectoryStructure, SRFdirectoryStructure,
+         ProjectTreeStructure)
     return pageArgs
-
 
 ##############################################################################################
 class StartPage(tk.Frame):
@@ -179,6 +193,8 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
         pageArgs = pageArgsOut()
+        for ii,pg in enumerate(pageArgs):
+            print(ii,pg)
 
         main_frame = tk.Frame(self)
         main_frame.pack(fill=BOTH, expand=1)
@@ -452,13 +468,13 @@ class StartPage(tk.Frame):
 
         ## hover description
         lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
-        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['summary_file']) #binding it and assigning a text to it
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['project_dir_loc']) #binding it and assigning a text to it
 
 
         entry1 = ttk.Entry(self)
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-        entry1.insert(0,inp['summary_file'])
-        self.outputDict['summary_file'] = entry1
+        entry1.insert(0,inp['project_dir_loc'])
+        self.outputDict['project_dir_loc'] = entry1
 
         button_plotmap = ttk.Button(self, text="ExploreMap", command=showMap)
         button_plotmap.place(relx=RELXS[4], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
@@ -476,9 +492,7 @@ class StartPage(tk.Frame):
                 outputResult[key] = value
         return outputResult
 
-
 ##############################################################################################
-
 ## P - Receiver Functions
 class PageRF(tk.Frame):
     """
@@ -602,11 +616,7 @@ class PageRF(tk.Frame):
         button_filter_tooltip = Pmw.Balloon(self) #Calling the tooltip
         button_filter_tooltip.bind(button_filter,stdpydesc['PRFpage']['btnConfigRFPlotPage']) #binding it and assigning a text to it
         
-
-
 ##############################################################################################
-
-
 # S-RF
 class PageSRF(tk.Frame):
     """
@@ -654,8 +664,6 @@ class PageSRF(tk.Frame):
         button_mode_tooltip.bind(button_mode,stdpydesc['others']['goToPRF']) #binding it and assigning a text to it
 
 ##############################################################################################
-
-
 class PageDataEnquiry(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -671,7 +679,6 @@ class PageDataEnquiry(tk.Frame):
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=1)
         
 ##############################################################################################
-
 class PageSKS(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -686,8 +693,6 @@ class PageSKS(tk.Frame):
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=3)
 
 ##############################################################################################
-
-
 class PageGeoRegion(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -884,13 +889,68 @@ class ProjectDir(tk.Frame):
         RELHEIGHT, RELWIDTH = 0.05, 0.2
         RELXS = np.linspace(0,1,6)
         drelx = 0.01
+        halfCellX = (RELXS[2]-RELXS[1])/2
 
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=4)
+        
+        button_options = button_options_nav 
+        fontDict = {"font":('calibri', 16, 'bold')}
+        button_options = {**button_options, **fontDict}
 
+        fontDictSecondary = {"font":('calibri', 12, 'bold')}
+        button_optionsSecondary = {**button_options_back, **fontDictSecondary}
+
+
+        labHeadOptions = {"font":('calibri', 18, 'bold'), "anchor":"center"}
+        label_options = {"font":('calibri', 12, 'normal')}
+
+        ################TOP Button###########
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text="Project Structure", **labHeadOptions)
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+
+
+        ## PRF page
+        RELY += RELHEIGHT+0.01 
+        def gotofdirecStrPrf():
+                controller.show_frame(pageArgs[13])
+
+        button_filename = Button(self, text="P-S Receiver Functions", command=gotofdirecStrPrf, **button_options)
+
+        button_filename.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH)
+
+        ## hover description
+        button_filename_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filename_tooltip.bind(button_filename,stdpydesc['dirnames']['PRF_direc_structure']) #binding it and assigning a text to it
+
+
+
+        ## SRF page
+        def gotodirecStrSrf():
+                controller.show_frame(pageArgs[14])
+        button_filename = Button(self, text="S-P Receiver Functions", command=gotodirecStrSrf, **button_options)
+
+        button_filename.place(relx=RELXS[2]+halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=2.5*RELWIDTH-drelx)
+
+        ## hover description
+        button_filename_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filename_tooltip.bind(button_filename,stdpydesc['dirnames']['SRF_direc_structure']) #binding it and assigning a text to it
+        
+        ## Project Tree Structure
+        RELY += RELHEIGHT+0.01 
+        def gotoprojecttreeSrf():
+                controller.show_frame(pageArgs[15])
+        button_filename = Button(self, text="Visualize Project Structure", command=gotoprojecttreeSrf, **button_options)
+
+        button_filename.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
+
+        ## hover description
+        button_filename_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filename_tooltip.bind(button_filename,stdpydesc['dirnames']['ProjectTreeStructure']) #binding it and assigning a text to it
 
 ##############################################################################################
-
 class PRF_filenames(tk.Frame):
     """
     tweak the filenames for the P-receiver functions
@@ -983,9 +1043,6 @@ class PRF_filenames(tk.Frame):
         for key, value in self.outputDict.items():
             outputResult[key] = value.get()
         return outputResult
-            
-
-        # print(self.outputDict)
 
 
 ##############################################################################################
@@ -1582,9 +1639,8 @@ class PRF_display(tk.Frame):
                 outputResult[key] = value
         return outputResult
         
-
 ##############################################################################################
-class RFdirectoryStructure(tk.Frame):
+class PRFdirectoryStructure(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -1593,11 +1649,198 @@ class RFdirectoryStructure(tk.Frame):
         RELHEIGHT, RELWIDTH = 0.05, 0.2
         RELXS = np.linspace(0,1,6)
         drelx = 0.01
+        halfCellX = (RELXS[2]-RELXS[1])/2
 
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=4)
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text="P-RF  Directory Structure", **labHeadOptions)
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
 
 
+        def back_prf():
+            controller.show_frame(pageArgs[4])
+
+
+        button_mode = Button(self, text="<<", command=back_prf, **button_options_BACK)
+
+        button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+        direc_vars = []
+        direc_vals = []
+        # direc_vars = list(direcDict.keys())
+        # direc_vals = list(direcDict.values())
+        for key,value in direcDict.items():
+            if key[:2] == 'RF':
+                direc_vars.append(key)
+                direc_vals.append(value)
+        kk=0
+        self.outputDict = {}
+        while kk<len(direc_vars):
+            RELY += RELHEIGHT+0.01 
+            lbl1 = ttk.Label(self, text=direc_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['dirnames'][direc_vars[kk]]) #binding it and assigning a text to it
+            
+
+
+            entry1 = ttk.Entry(self)
+            entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+            entry1.insert(0,direc_vals[kk])
+            self.outputDict[direc_vars[kk]] = entry1
+
+            ##
+            if kk+1<len(direc_vars):
+                kk+=1
+                lbl1 = ttk.Label(self, text=direc_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['dirnames'][direc_vars[kk]]) #binding it and assigning a text to it
+                
+
+                entry1 = ttk.Entry(self)
+                entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+                entry1.insert(0,direc_vals[kk])
+                self.outputDict[direc_vars[kk]] = entry1
+            kk+=1
+    
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            outputResult[key] = value.get()
+        return outputResult
+
+##############################################################################################
+class SRFdirectoryStructure(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        pageArgs = pageArgsOut()
+        RELY = 0
+        RELHEIGHT, RELWIDTH = 0.05, 0.2
+        RELXS = np.linspace(0,1,6)
+        drelx = 0.01
+        halfCellX = (RELXS[2]-RELXS[1])/2
+
+
+        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=4)
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text="S-RF Directory Structure", **labHeadOptions)
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
+
+
+
+        def back_prf():
+            controller.show_frame(pageArgs[4])
+
+
+        button_mode = Button(self, text="<<", command=back_prf, **button_options_BACK)
+
+        button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+        direc_vars = []
+        direc_vals = []
+
+        for key,value in direcDict.items():
+            if key[:2] == 'SF':
+                direc_vars.append(key)
+                direc_vals.append(value)
+        kk=0
+        self.outputDict = {}
+        while kk<len(direc_vars):
+            RELY += RELHEIGHT+0.01 
+            lbl1 = ttk.Label(self, text=direc_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['dirnames'][direc_vars[kk]]) #binding it and assigning a text to it
+            
+
+
+            entry1 = ttk.Entry(self)
+            entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+            entry1.insert(0,direc_vals[kk])
+            self.outputDict[direc_vars[kk]] = entry1
+
+            ##
+            if kk+1<len(direc_vars):
+                kk+=1
+                lbl1 = ttk.Label(self, text=direc_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXS[3]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['dirnames'][direc_vars[kk]]) #binding it and assigning a text to it
+                
+
+                entry1 = ttk.Entry(self)
+                entry1.place(relx=RELXS[4]-halfCellX, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH+halfCellX)
+                entry1.insert(0,direc_vals[kk])
+                self.outputDict[direc_vars[kk]] = entry1
+            kk+=1
+    
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            outputResult[key] = value.get()
+        return outputResult
+
+##############################################################################################
+class ProjectTreeStructure(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        pageArgs = pageArgsOut()
+        RELY = 0
+        RELHEIGHT, RELWIDTH = 0.05, 0.2
+        RELXS = np.linspace(0,1,6)
+        drelx = 0.01
+        halfCellX = (RELXS[2]-RELXS[1])/2
+
+
+        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=1)
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text="Project Directory Visualization", **labHeadOptions)
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
+
+
+        def back_prf():
+            controller.show_frame(pageArgs[4])
+
+
+        button_mode = Button(self, text="<<", command=back_prf, **button_options_BACK)
+
+        button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+        ###
+        RELY += 2*RELHEIGHT+0.01 
+        listNodes = tk.Listbox(self, width=20, height=20, font=("Helvetica", 16))
+        listNodes.place(relx=RELXS[1]-halfCellX, rely=RELY, relheight=15*RELHEIGHT, relwidth=4*RELWIDTH)
+        # listNodes.pack(side="left", fill="y")
+
+        scrollbar = tk.Scrollbar(self, orient="vertical")
+        scrollbar.config(command=listNodes.yview)
+        scrollbar.pack(side="right", fill="y")
+
+        listNodes.config(yscrollcommand=scrollbar.set)
+        if os.path.exists(USER_inp_yaml):
+            dirPath = user_inp['project_dir_loc']
+        else:
+            dirPath = inp['project_dir_loc']
+
+        outputDirStructureList = list_files("./")
+        for x in outputDirStructureList:
+            listNodes.insert(tk.END, x)   
+        
 ##############################################################################################
 
 app = stadiumpyMain()

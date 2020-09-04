@@ -7,5 +7,6 @@ mnlong: 119
 mode: 0
 mxlat: 26
 mxlong: 125
+project_dir_loc: ./
 project_name: Simple_RFSKS_test/
 summary_file: summary_file.txt

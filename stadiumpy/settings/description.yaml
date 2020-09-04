@@ -6,6 +6,7 @@ inputfile:
   project_name: Folder name for the current project.
   mode: Select mode to run the STADIUMpy
   fresh_start: Option to delete (True) or keep (False) all previous computations.
+  project_dir_loc: Path to the project directory
   summary_file: Text file where the summary are written.
   makeRF: Compute the P-S receiver function.
   makeSRF: Compute the S-P receiver function.
@@ -24,6 +25,9 @@ PRFpage:
   btnSetFilterPage: Set the filter parameters for RF computations
   btnConfigRFPlotPage: Configure the output RF plot
 dirnames:
+  PRF_direc_structure: Set the directory structure for P-S Receiver Functions
+  SRF_direc_structure: Set the directory structure for S-P Receiver Functions
+  ProjectTreeStructure: Visualize project contents with a tree structure
   RFdatafileloc: Directory for the P-RF H5 data.
   RFinfoloc: Directory for the P-RF station and event information.
   RFplotloc: Directory for the P-RF station profiles.

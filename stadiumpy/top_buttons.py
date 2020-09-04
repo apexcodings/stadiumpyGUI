@@ -13,7 +13,8 @@ def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *page
 
     ## Data enquiry page
     dataenquiry_btn = Button(self, text="Data Enquiry",
-                        command=lambda: controller.show_frame(pageArgs[1]))
+                        command=lambda: controller.show_frame(pageArgs[1]),
+                        state="disabled")
 
     ## RF page
     prf_button = Button(self, text="Receiver Functions",
@@ -21,7 +22,8 @@ def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *page
 
     ## SKS page
     sks_button = Button(self, text="Shear-wave Splitting",
-                        command=lambda: controller.show_frame(pageArgs[3]))
+                        command=lambda: controller.show_frame(pageArgs[3]),
+                        state="disabled")
 
     ## 
     projdir_button = Button(self, text="Project Directory",
