@@ -6,7 +6,7 @@ inputfile:
   project_name: Folder name for the current project.
   mode: Select mode to run the STADIUMpy
   fresh_start: Option to delete (True) or keep (False) all previous computations.
-  project_dir_loc: Path to the project directory
+  project_dir_loc: Path to the project directory. A new directory with the ProjectName will be created at this location.
   summary_file: Text file where the summary are written.
   makeRF: Compute the P-S receiver function.
   makeSRF: Compute the S-P receiver function.
@@ -15,7 +15,7 @@ inputfile:
   mxlong: Maximum longitude of the selected region.
   mnlat: Minimum latitude of the selected region.
   mxlat: Maximum latitude of the selected region.
-  exploreMap: Select the region with the assistance of map.
+  exploreMap: Select the study region with the assistance of map.
 
 PRFpage:
   btnFilenamePage: Change the output filenames for RF computations

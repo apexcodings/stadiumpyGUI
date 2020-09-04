@@ -462,7 +462,7 @@ class StartPage(tk.Frame):
 
         RELY += RELHEIGHT+0.01
         ## Project Dir
-        lbl1 = ttk.Label(self, text="Project Location:")
+        lbl1 = ttk.Label(self, text="ProjectLocation:")
         lbl1.configure(anchor="center")
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
