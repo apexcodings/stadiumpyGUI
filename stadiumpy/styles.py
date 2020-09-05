@@ -38,15 +38,19 @@ label_options = {"font":('calibri', 12, 'normal')}
 
 os_platform_styles = platform.system()
 
-if os_platform_styles is "Darwin":
+if os_platform_styles == "Darwin":
     topbuttons_options = {"borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised"}
     topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
-elif os_platform_styles is "Linux":
+    system_styles = {"font" : fontOSX,  "borderwidth" : '2', "background":"#c8ccc9"}
+
+elif os_platform_styles == "Linux":
     topbuttons_options = {"borderwidth":1, "font":('calibri', 10, 'bold'), "relief":"raised"}
     topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 10, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
+    system_styles = {"font" : fontLinuX,  "borderwidth" : '2', "background":"#c8ccc9"}
 else:
     topbuttons_options = {"borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised"}
     topbuttons_options_selected = { "borderwidth":1, "font":('calibri', 16, 'bold'), "relief":"raised", "bg":"#a1a3a6", "fg":"white"}
+    system_styles = {"font" : fontOSX,  "borderwidth" : '2', "background":"#c8ccc9"}
 
 
 def toggle_mode(button_mode):
@@ -54,10 +58,12 @@ def toggle_mode(button_mode):
         dictAdd = {'text':'Stepwise', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
         for key, value in dictAdd.items():
             button_mode[key]=value
+        stepwiseBtnState = "disabled"
     else:
         dictAdd = {'text':'Automated', 'bg':'#ADEFD1', 'fg': '#00203F'}
         for key, value in dictAdd.items():
             button_mode[key]=value
+        stepwiseBtnState = "normal"
 
 def toggle_PRF(button_mode, controller, pageArgs):
     controller.show_frame(pageArgs[6])
@@ -68,20 +74,27 @@ def toggle_SRF(button_mode, controller, pageArgs):
 
 
 def toggle_button(button):
-    if button['text'] == 'True':
-        dictAdd = {'text':'False', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
+    if button['text'] == 'Yes':
+        dictAdd = {'text':'No', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
         for key, value in dictAdd.items():
             button[key]=value
         output = 1 
     else:
-        dictAdd = {'text':'True', 'bg':'#ADEFD1', 'fg': '#00203F'}
+        dictAdd = {'text':'Yes', 'bg':'#ADEFD1', 'fg': '#00203F'}
         for key, value in dictAdd.items():
             button[key]=value
         output = 0
     return output
 
 def get_toggle_output(button):
-    if button['text'] == 'True':
+    if button['text'] == 'Yes':
+        output = 1 
+    else:
+        output = 0
+    return output
+
+def get_toggle_output_mode(button):
+    if button['text'] == 'Automated':
         output = 1 
     else:
         output = 0
@@ -105,10 +118,10 @@ def convert_input(value):
 
 def button_init(hkappa_val):
     if not hkappa_val:
-        frsttext = "False"
+        frsttext = "No"
         button_options = button_options_red
     else:
-        frsttext = "True"
+        frsttext = "Yes"
         button_options = button_options_green
     return frsttext, button_options
 

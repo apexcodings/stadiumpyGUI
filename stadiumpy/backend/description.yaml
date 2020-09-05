@@ -16,6 +16,8 @@ inputfile:
   mnlat: Minimum latitude of the selected region.
   mxlat: Maximum latitude of the selected region.
   exploreMap: Select the study region with the assistance of map.
+  datasettings: Set the data filters such as clients, network, stations.
+  stepwise: Toggle the steps for the run of STADIUMpy
 
 PRFpage:
   btnFilenamePage: Change the output filenames for RF computations

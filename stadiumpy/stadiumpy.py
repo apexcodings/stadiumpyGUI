@@ -12,7 +12,6 @@ import numpy as np
 from stadiumpy.page_control import PageControl
 # from stadiumpy.plot_map_gui import plotMap
 from stadiumpy.font_properties import *
-import platform
 import stadiumpy as stdpy
 from stadiumpy.widgets import SFrame, Button
 from stadiumpy.top_buttons import display_main_buttons
@@ -23,8 +22,8 @@ from PIL import ImageTk, Image
 from tkinter import messagebox
 import Pmw
 import ast
+from stadiumpy.backend import stadiumpyBackend
 
-# print("Hello from", __name__)
 
 cachedirec=".cache"
 if not os.path.exists(cachedirec):
@@ -33,15 +32,16 @@ if not os.path.exists(cachedirec):
 image_name = os.path.join('.cache', 'region-plot.png')
 
 # read inputYAML
-inp_file_yaml = os.path.join(stdpy.__path__[0], 'settings', 'input_file.yaml')
-adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'advRFparam.yaml')
-descrip_yaml = os.path.join(stdpy.__path__[0], 'settings', 'description.yaml')
-direc_yaml = os.path.join(stdpy.__path__[0], 'settings', 'directories_names.yaml')
+inp_file_yaml = os.path.join(stdpy.__path__[0], 'backend', 'input_file.yaml')
+adv_prf_yaml = os.path.join(stdpy.__path__[0], 'backend', 'advRFparam.yaml')
+descrip_yaml = os.path.join(stdpy.__path__[0], 'backend', 'description.yaml')
+direc_yaml = os.path.join(stdpy.__path__[0], 'backend', 'directories_names.yaml')
+stepwise_yaml = os.path.join(stdpy.__path__[0], 'backend', 'stepwise.yaml')
 
 ## User defined
-USER_adv_prf_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_advRFparam.yaml')
-USER_inp_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_input_file.yaml')
-USER_direc_yaml = os.path.join(stdpy.__path__[0], 'settings', 'USER_directories_names.yaml')
+USER_adv_prf_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_advRFparam.yaml')
+USER_inp_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_input_file.yaml')
+USER_direc_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_directories_names.yaml')
 
 
 with open(inp_file_yaml) as f:
@@ -59,6 +59,9 @@ with open(USER_inp_yaml) as f:
 with open(direc_yaml) as f:
     direcDict = yaml.load(f, Loader=yaml.FullLoader)
 
+with open(stepwise_yaml) as f:
+    stepwiseDict = yaml.load(f, Loader=yaml.FullLoader)
+
 class stadiumpyMain(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -74,14 +77,7 @@ class stadiumpyMain(tk.Tk):
         style = Style()
         style.theme_use("default")
 
-        os_platform = platform.system()
-        if os_platform is "Darwin":
-            style.configure('W.TButton', font = fontOSX,  borderwidth = '2', background="#c8ccc9")
-        elif os_platform is "Linux":
-            style.configure('W.TButton', font = fontLinuX,  borderwidth = '2', background="#c8ccc9")
-        else:
-            style.configure('W.TButton', font = fontOSX,  borderwidth = '2', background="#c8ccc9")
-
+        style.configure('W.TButton', **system_styles)
         
         ## TOP frame
         container = tk.Frame(self, relief=RAISED, borderwidth=1)
@@ -96,7 +92,7 @@ class stadiumpyMain(tk.Tk):
         stadium_pages = (StartPage, PageDataEnquiry, PageRF, PageSKS, ProjectDir, PageGeoRegion,
          PageSRF, PRF_filenames, PRF_hkappa, PRF_profileconfig, PRF_eventsSearch,
          PRF_filter, PRF_display, PRFdirectoryStructure, SRFdirectoryStructure, 
-         ProjectTreeStructure)
+         ProjectTreeStructure, StepWise, DataSettings)
 
         for F in stadium_pages:
 
@@ -119,7 +115,7 @@ class stadiumpyMain(tk.Tk):
             print("Run Stadiumpy")
 
             ## write homepage inputs from GUI
-            inpFile_dict = self.frames[StartPage].getOutput()
+            inpFile_dict = self.frames[StartPage].getOutput()            
             
             inpYML = open(USER_inp_yaml, "w")
             yaml.dump(inpFile_dict,inpYML)
@@ -173,16 +169,14 @@ class stadiumpyMain(tk.Tk):
         root = tk.Tk()
         root.quit()     # stops mainloop
         root.destroy()  # this is necessary on Windows to prevent
-
 ##############################################################################################
 def pageArgsOut():
     # pageArgs = (StartPage, PageControl)
     pageArgs = (StartPage, PageDataEnquiry, PageRF, PageSKS, ProjectDir, PageGeoRegion,
          PageSRF, PRF_filenames, PRF_hkappa, PRF_eventsSearch, PRF_profileconfig,
          PRF_filter, PRF_display, PRFdirectoryStructure, SRFdirectoryStructure,
-         ProjectTreeStructure)
+         ProjectTreeStructure, StepWise, DataSettings)
     return pageArgs
-
 ##############################################################################################
 class StartPage(tk.Frame):
     """
@@ -217,7 +211,6 @@ class StartPage(tk.Frame):
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=0)
 
         self.outputDict = {}
-        RELY0 = RELY
         ## Mode
 
         lbl1 = ttk.Label(self, text="Mode:")
@@ -225,33 +218,75 @@ class StartPage(tk.Frame):
         RELY += RELHEIGHT+0.01 
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
+        stepwiseBtnState = "normal"
+        def gotostepwisepage():
+                controller.show_frame(pageArgs[16])
+        button_stepwise = ttk.Button(self, text="StepwiseSettings", command=gotostepwisepage, state=stepwiseBtnState)
+
         if inp['mode']=="Automated":
             stad_mode = "Automated"
             button_options = button_options_green
+            # stepwiseBtnState = "disabled"
+            button_stepwise['state'] = "disabled"
         else:
             stad_mode = "Stepwise"
             button_options = button_options_red
+            # stepwiseBtnState = "normal"
+            button_stepwise['state'] = "normal"
+
+        def toggle_mode(button_mode):
+            if button_mode['text'] == 'Automated':
+                dictAdd = {'text':'Stepwise', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
+                for key, value in dictAdd.items():
+                    button_mode[key]=value
+                button_stepwise['state'] = "normal"
+            else:
+                dictAdd = {'text':'Automated', 'bg':'#ADEFD1', 'fg': '#00203F'}
+                for key, value in dictAdd.items():
+                    button_mode[key]=value
+                button_stepwise['state'] = "disabled"
 
         button_mode = Button(self, text=stad_mode, command=lambda: toggle_mode(button_mode), **button_options)
 
         button_mode.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-        self.outputDict['mode'] = get_toggle_output(button_mode)
+        self.outputDict['mode'] = get_toggle_output_mode(button_mode)
         
         ## hover description
         lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
         lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['mode']) #binding it and assigning a text to it
 
+        ## Data Settings button
+        def gotodatasettingspage():
+                controller.show_frame(pageArgs[17])
+        button_filename = ttk.Button(self, text="DataSettings", command=gotodatasettingspage)
+
+        button_filename.place(relx=RELXS[2], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        ## hover description
+        button_filename_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_filename_tooltip.bind(button_filename,stdpydesc['inputfile']['datasettings']) #binding it and assigning a text to it
+        
+        ## Stepwise button
+
+        button_stepwise.place(relx=RELXS[3], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+        ## hover description
+        button_stepwise_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        button_stepwise_tooltip.bind(button_stepwise,stdpydesc['inputfile']['stepwise']) #binding it and assigning a text to it
+        
+                
         ## fresh start
+        RELY0 = RELY
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text="FreshStart:")
         lbl1.configure(anchor="center")
         lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
         if not inp['fresh_start']:
-            frsttext = "False"
+            frsttext = "No"
             button_options = button_options_red
         else:
-            frsttext = "True"
+            frsttext = "Yes"
             button_options = button_options_green
         
 
@@ -341,10 +376,10 @@ class StartPage(tk.Frame):
 
         
         if not inp['makeRF']:
-            makeRFtext = "False"
+            makeRFtext = "No"
             button_options = button_options_red
         else:
-            makeRFtext = "True"
+            makeRFtext = "Yes"
             button_options = button_options_green
 
         button_makerf = Button(self, 
@@ -368,10 +403,10 @@ class StartPage(tk.Frame):
 
 
         if not inp['makeSRF']:
-            makeSRFtext = "False"
+            makeSRFtext = "No"
             button_options = button_options_red
         else:
-            makeSRFtext = "True"
+            makeSRFtext = "Yes"
             button_options = button_options_green
         
         button_makesrf = Button(self, 
@@ -394,10 +429,10 @@ class StartPage(tk.Frame):
 
 
         if not inp['makeSKS']:
-            makeSKStext = "False"
+            makeSKStext = "No"
             button_options = button_options_red
         else:
-            makeSKStext = "True"
+            makeSKStext = "Yes"
             button_options = button_options_green
 
 
@@ -422,8 +457,13 @@ class StartPage(tk.Frame):
         RELY += RELHEIGHT+0.01
         lbl1.place(relx=RELXS[3], rely=RELY, relheight=RELHEIGHT, relwidth=2*RELWIDTH)
 
-
+        lbl1 = ttk.Label(self, text="", relief=RIDGE)
+        lbl1.configure(anchor="center")
         RELY += RELHEIGHT+0.01
+        lbl1.place(relx=RELXS[3], rely=RELY-drelx, relheight=4*RELHEIGHT-1*drelx, relwidth=2*RELWIDTH)
+
+
+        # RELY += RELHEIGHT+0.01
         geoMaxLatEntry = ttk.Entry(self, width=10)
         geoMaxLatEntry.insert(0,str(maxlat))
         geoMaxLatEntry.place(relx=RELXS[3]+1.5*(RELXS[4]-RELXS[3])/2-drelx, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2)
@@ -482,6 +522,7 @@ class StartPage(tk.Frame):
         ## hover description
         button_plotmap_tooltip = Pmw.Balloon(self) #Calling the tooltip
         button_plotmap_tooltip.bind(button_plotmap,stdpydesc['inputfile']['exploreMap']) #binding it and assigning a text to it
+
     
     def getOutput(self):
         outputResult = {}
@@ -491,9 +532,7 @@ class StartPage(tk.Frame):
             except:
                 outputResult[key] = value
         return outputResult
-
-##############################################################################################
-## P - Receiver Functions
+########################################P - Receiver Functions######################################################
 class PageRF(tk.Frame):
     """
     This page is to set the parameters for the P-receiver functions of the stadiumpy
@@ -615,9 +654,7 @@ class PageRF(tk.Frame):
         ## hover description
         button_filter_tooltip = Pmw.Balloon(self) #Calling the tooltip
         button_filter_tooltip.bind(button_filter,stdpydesc['PRFpage']['btnConfigRFPlotPage']) #binding it and assigning a text to it
-        
-##############################################################################################
-# S-RF
+##########################################S-RF####################################################
 class PageSRF(tk.Frame):
     """
     This page is to set the parameters for the S-receiver functions of the stadiumpy
@@ -662,7 +699,6 @@ class PageSRF(tk.Frame):
         ## hover description
         button_mode_tooltip = Pmw.Balloon(self) #Calling the tooltip
         button_mode_tooltip.bind(button_mode,stdpydesc['others']['goToPRF']) #binding it and assigning a text to it
-
 ##############################################################################################
 class PageDataEnquiry(tk.Frame):
 
@@ -677,7 +713,6 @@ class PageDataEnquiry(tk.Frame):
 
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=1)
-        
 ##############################################################################################
 class PageSKS(tk.Frame):
 
@@ -691,7 +726,6 @@ class PageSKS(tk.Frame):
 
 
         display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=3)
-
 ##############################################################################################
 class PageGeoRegion(tk.Frame):
 
@@ -878,7 +912,6 @@ class PageGeoRegion(tk.Frame):
 
         button_plotmap = ttk.Button(self, text="RefreshMap", command=lambda: refreshMap(canvas))
         button_plotmap.place(relx=RELXS[4], rely=plotmapRELY, relheight=RELHEIGHT, relwidth=RELWIDTH-drelx)
-        
 ##############################################################################################
 class ProjectDir(tk.Frame):
 
@@ -898,12 +931,8 @@ class ProjectDir(tk.Frame):
         fontDict = {"font":('calibri', 16, 'bold')}
         button_options = {**button_options, **fontDict}
 
-        fontDictSecondary = {"font":('calibri', 12, 'bold')}
-        button_optionsSecondary = {**button_options_back, **fontDictSecondary}
-
 
         labHeadOptions = {"font":('calibri', 18, 'bold'), "anchor":"center"}
-        label_options = {"font":('calibri', 12, 'normal')}
 
         ################TOP Button###########
         RELY += RELHEIGHT+0.01 
@@ -949,7 +978,6 @@ class ProjectDir(tk.Frame):
         ## hover description
         button_filename_tooltip = Pmw.Balloon(self) #Calling the tooltip
         button_filename_tooltip.bind(button_filename,stdpydesc['dirnames']['ProjectTreeStructure']) #binding it and assigning a text to it
-
 ##############################################################################################
 class PRF_filenames(tk.Frame):
     """
@@ -1043,8 +1071,6 @@ class PRF_filenames(tk.Frame):
         for key, value in self.outputDict.items():
             outputResult[key] = value.get()
         return outputResult
-
-
 ##############################################################################################
 class PRF_hkappa(tk.Frame):
     """
@@ -1164,7 +1190,6 @@ class PRF_hkappa(tk.Frame):
                 outputResult[key] = value
 
         return outputResult
-
 ##############################################################################################
 class PRF_profileconfig(tk.Frame):
 
@@ -1271,7 +1296,6 @@ class PRF_profileconfig(tk.Frame):
             except:
                 outputResult[key] = value
         return outputResult
-
 ##############################################################################################
 class PRF_eventsSearch(tk.Frame):
 
@@ -1369,7 +1393,6 @@ class PRF_eventsSearch(tk.Frame):
             except:
                 outputResult[key] = value
         return outputResult
-
 ##############################################################################################
 class PRF_filter(tk.Frame):
 
@@ -1461,7 +1484,6 @@ class PRF_filter(tk.Frame):
             except:
                 outputResult[key] = value
         return outputResult
-
 ##############################################################################################
 class PRF_display(tk.Frame):
 
@@ -1638,7 +1660,6 @@ class PRF_display(tk.Frame):
             except:
                 outputResult[key] = value
         return outputResult
-        
 ##############################################################################################
 class PRFdirectoryStructure(tk.Frame):
 
@@ -1715,7 +1736,6 @@ class PRFdirectoryStructure(tk.Frame):
         for key, value in self.outputDict.items():
             outputResult[key] = value.get()
         return outputResult
-
 ##############################################################################################
 class SRFdirectoryStructure(tk.Frame):
 
@@ -1792,7 +1812,6 @@ class SRFdirectoryStructure(tk.Frame):
         for key, value in self.outputDict.items():
             outputResult[key] = value.get()
         return outputResult
-
 ##############################################################################################
 class ProjectTreeStructure(tk.Frame):
 
@@ -1840,8 +1859,399 @@ class ProjectTreeStructure(tk.Frame):
         outputDirStructureList = list_files("./")
         for x in outputDirStructureList:
             listNodes.insert(tk.END, x)   
-        
 ##############################################################################################
+class StepWise(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        pageArgs = pageArgsOut()
+        RELY = 0
+        RELHEIGHT, RELWIDTH = 0.05, 0.2
+        RELXS = np.linspace(0,1,6)
+        drelx = 0.01
+        # halfCellX = (RELXS[2]-RELXS[1])/2
+        halfCellX = RELWIDTH/2
+
+
+        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=None)
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text="StepWise Settings", **labHeadOptions)
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
+
+
+
+        def back_prf():
+            controller.show_frame(pageArgs[0])
+
+
+        button_mode = Button(self, text="<<", command=back_prf, **button_options_BACK)
+
+        button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+        
+        lbl1 = ttk.Label(self, text="Plot Settings:", **labHeadOptions, relief=RIDGE)
+        RELY += RELHEIGHT+0.01 
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+        
+        stepwisePlot_vars = list(stepwiseDict['plot_settings'].keys())
+        stepwisePlot_vals = list(stepwiseDict['plot_settings'].values())
+
+
+        RELWIDTHtemp1 = 0.2
+        RELWIDTHtemp2 = 0.1
+        RELWIDTHtemp3 = 0.03
+        RELXStemp = np.linspace(0,1,4)
+        kk=0
+        self.outputDict = {}
+        while kk<len(stepwisePlot_vars):
+            RELY += RELHEIGHT+0.01 
+            lbl1 = ttk.Label(self, text=stepwisePlot_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[0]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePlot_vars[kk]]) #binding it and assigning a text to it
+            
+
+
+            frsttext, button_options = button_init(stepwisePlot_vals[kk])
+            button_stepwisePlot_vals1 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwisePlot_vals1),
+                    **button_options
+                    )
+            button_stepwisePlot_vals1.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict[stepwisePlot_vars[kk]] = get_toggle_output(button_stepwisePlot_vals1)
+
+            
+
+            ##
+            if kk+1<len(stepwisePlot_vars):
+                kk+=1
+                lbl1 = ttk.Label(self, text=stepwisePlot_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXStemp[1]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePlot_vars[kk]]) #binding it and assigning a text to it
+  
+                frsttext, button_options = button_init(stepwisePlot_vals[kk])
+                button_stepwisePlot_vals2 = Button(self, 
+                        text=frsttext,
+                        command=lambda: toggle_button(button_stepwisePlot_vals2),
+                        **button_options
+                        )
+                button_stepwisePlot_vals2.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+                self.outputDict[stepwisePlot_vars[kk]] = get_toggle_output(button_stepwisePlot_vals2)
+
+                
+
+            if kk+1<len(stepwisePlot_vars):
+                kk+=1
+                lbl1 = ttk.Label(self, text=stepwisePlot_vars[kk]+":", **label_options)
+                lbl1.place(relx=RELXStemp[2]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+                ## hover description
+                lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+                lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePlot_vars[kk]]) #binding it and assigning a text to it
+
+                frsttext, button_options = button_init(stepwisePlot_vals[kk])
+                button_stepwisePlot_vals3 = Button(self, 
+                        text=frsttext,
+                        command=lambda: toggle_button(button_stepwisePlot_vals3),
+                        **button_options
+                        )
+                button_stepwisePlot_vals3.place(relx=RELXStemp[2]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+                self.outputDict[stepwisePlot_vars[kk]] = get_toggle_output(button_stepwisePlot_vals3)
+
+            kk+=1
+        
+        #######
+        lbl1 = ttk.Label(self, text="P-RF Stepwise:", **labHeadOptions, relief=RIDGE)
+        RELY += RELHEIGHT+0.01 
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+
+        stepwisePRF_vars = list(stepwiseDict['rf_stepwise'].keys())
+        stepwisePRF_vals = list(stepwiseDict['rf_stepwise'].values())
+        RELWIDTHtemp1 = 0.2
+        RELWIDTHtemp2 = 0.1
+        RELWIDTHtemp3 = 0.03
+        RELXStemp = np.linspace(0,1,4)
+        kk=0
+        self.outputDict2 = {}
+        # while kk<len(stepwisePRF_vars):
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text=stepwisePRF_vars[kk]+":", **label_options)
+        lbl1.place(relx=RELXStemp[0]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePRF_vars[kk]]) #binding it and assigning a text to it
+        
+
+
+        frsttext, button_options = button_init(stepwisePRF_vals[kk])
+        button_stepwisePRF_vals1 = Button(self, 
+                text=frsttext,
+                command=lambda: toggle_button(button_stepwisePRF_vals1),
+                **button_options
+                )
+        button_stepwisePRF_vals1.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+        self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals1)
+
+        
+
+        ##
+        if kk+1<len(stepwisePRF_vars):
+            kk+=1
+            lbl1 = ttk.Label(self, text=stepwisePRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[1]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePRF_vars[kk]]) #binding it and assigning a text to it
+
+            frsttext, button_options = button_init(stepwisePRF_vals[kk])
+            button_stepwisePRF_vals2 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwisePRF_vals2),
+                    **button_options
+                    )
+            button_stepwisePRF_vals2.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals2)
+
+            
+
+        if kk+1<len(stepwisePRF_vars):
+            kk+=1
+            lbl1 = ttk.Label(self, text=stepwisePRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[2]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePRF_vars[kk]]) #binding it and assigning a text to it
+
+            frsttext, button_options = button_init(stepwisePRF_vals[kk])
+            button_stepwisePRF_vals3 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwisePRF_vals3),
+                    **button_options
+                    )
+            button_stepwisePRF_vals3.place(relx=RELXStemp[2]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals3)
+
+
+        if kk+1<len(stepwisePRF_vars):
+            RELY += RELHEIGHT+0.01 
+            lbl1 = ttk.Label(self, text=stepwisePRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[0]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePRF_vars[kk]]) #binding it and assigning a text to it
+            
+
+
+            frsttext, button_options = button_init(stepwisePRF_vals[kk])
+            button_stepwisePRF_vals4 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwisePRF_vals4),
+                    **button_options
+                    )
+            button_stepwisePRF_vals4.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals4)
+
+        if kk+1<len(stepwisePRF_vars):
+            kk+=1
+            lbl1 = ttk.Label(self, text=stepwisePRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[1]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwisePRF_vars[kk]]) #binding it and assigning a text to it
+
+            frsttext, button_options = button_init(stepwisePRF_vals[kk])
+            button_stepwisePRF_vals5 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwisePRF_vals5),
+                    **button_options
+                    )
+            button_stepwisePRF_vals5.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals5)
+
+
+            # kk+=1
+        
+        #######
+        lbl1 = ttk.Label(self, text="S-RF Stepwise:", **labHeadOptions, relief=RIDGE)
+        RELY += RELHEIGHT+0.01 
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=5*RELWIDTH)
+
+        stepwiseSRF_vars = list(stepwiseDict['srf_stepwise'].keys())
+        stepwiseSRF_vals = list(stepwiseDict['srf_stepwise'].values())
+        kk=0
+        RELWIDTHtemp1 = 0.2
+        RELWIDTHtemp2 = 0.1
+        RELWIDTHtemp3 = 0.03
+        RELXStemp = np.linspace(0,1,4)
+        self.outputDict3 = {}
+
+
+
+        # while kk<len(stepwiseSRF_vars):
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text=stepwiseSRF_vars[kk]+":", **label_options)
+        lbl1.place(relx=RELXStemp[0]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwiseSRF_vars[kk]]) #binding it and assigning a text to it
+        
+
+
+        frsttext, button_options = button_init(stepwiseSRF_vals[kk])
+        button_stepwiseSRF_vals1 = Button(self, 
+                text=frsttext,
+                command=lambda: toggle_button(button_stepwiseSRF_vals1),
+                **button_options
+                )
+        button_stepwiseSRF_vals1.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+        self.outputDict3[stepwiseSRF_vars[kk]] = get_toggle_output(button_stepwiseSRF_vals1)
+
+        
+
+        ##
+        if kk+1<len(stepwiseSRF_vars):
+            kk+=1
+            lbl1 = ttk.Label(self, text=stepwiseSRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[1]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwiseSRF_vars[kk]]) #binding it and assigning a text to it
+
+            frsttext, button_options = button_init(stepwiseSRF_vals[kk])
+            button_stepwiseSRF_vals2 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwiseSRF_vals2),
+                    **button_options
+                    )
+            button_stepwiseSRF_vals2.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict3[stepwiseSRF_vars[kk]] = get_toggle_output(button_stepwiseSRF_vals2)
+
+            
+
+        if kk+1<len(stepwiseSRF_vars):
+            kk+=1
+            lbl1 = ttk.Label(self, text=stepwiseSRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[2]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwiseSRF_vars[kk]]) #binding it and assigning a text to it
+
+            frsttext, button_options = button_init(stepwiseSRF_vals[kk])
+            button_stepwiseSRF_vals3 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwiseSRF_vals3),
+                    **button_options
+                    )
+            button_stepwiseSRF_vals3.place(relx=RELXStemp[2]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict3[stepwiseSRF_vars[kk]] = get_toggle_output(button_stepwiseSRF_vals3)
+
+        if kk+1<len(stepwiseSRF_vars):
+            RELY += RELHEIGHT+0.01 
+            lbl1 = ttk.Label(self, text=stepwiseSRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[0]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwiseSRF_vars[kk]]) #binding it and assigning a text to it
+            
+
+
+            frsttext, button_options = button_init(stepwiseSRF_vals[kk])
+            button_stepwiseSRF_vals4 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwiseSRF_vals4),
+                    **button_options
+                    )
+            button_stepwiseSRF_vals4.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict3[stepwiseSRF_vars[kk]] = get_toggle_output(button_stepwiseSRF_vals4)
+
+        if kk+1<len(stepwiseSRF_vars):
+            kk+=1
+            lbl1 = ttk.Label(self, text=stepwiseSRF_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[1]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][stepwiseSRF_vars[kk]]) #binding it and assigning a text to it
+
+            frsttext, button_options = button_init(stepwiseSRF_vals[kk])
+            button_stepwiseSRF_vals5 = Button(self, 
+                    text=frsttext,
+                    command=lambda: toggle_button(button_stepwiseSRF_vals5),
+                    **button_options
+                    )
+            button_stepwiseSRF_vals5.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+            self.outputDict3[stepwiseSRF_vars[kk]] = get_toggle_output(button_stepwiseSRF_vals5)
+
+            # kk+=1
+    
+    def getOutput1(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            outputResult[key] = value.get()
+        return outputResult
+
+    def getOutput2(self):
+        outputResult = {}
+        for key, value in self.outputDict2.items():
+            outputResult[key] = value.get()
+        return outputResult
+
+    def getOutput3(self):
+        outputResult = {}
+        for key, value in self.outputDict3.items():
+            outputResult[key] = value.get()
+        return outputResult
+##############################################################################################
+class DataSettings(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        pageArgs = pageArgsOut()
+        RELY = 0
+        RELHEIGHT, RELWIDTH = 0.05, 0.2
+        RELXS = np.linspace(0,1,6)
+        drelx = 0.01
+        halfCellX = (RELXS[2]-RELXS[1])/2
+
+
+        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=None)
+        RELY += RELHEIGHT+0.01 
+        lbl1 = ttk.Label(self, text="Data Settings", **labHeadOptions)
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=3*RELWIDTH)
+
+
+        def back_prf():
+            controller.show_frame(pageArgs[0])
+
+
+        button_mode = Button(self, text="<<", command=back_prf, **button_options_BACK)
+
+        button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
+
+    
+    # def getOutput(self):
+    #     outputResult = {}
+    #     for key, value in self.outputDict.items():
+    #         outputResult[key] = value.get()
+    #     return outputResult
+##############################################################################################
+
 
 app = stadiumpyMain()
 app.mainloop()

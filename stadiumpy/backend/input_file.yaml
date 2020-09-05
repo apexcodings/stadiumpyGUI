@@ -1,7 +1,7 @@
 # PARAMETERS: VALUES
 project_name: Simple_RFSKS_test/
 mode: Automated
-project_dir_loc: "./"
+project_dir_loc: "~/Downloads/"
 fresh_start: 0 #1 to delete the previous computations
 
 summary_file: summary_file.txt
