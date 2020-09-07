@@ -85,6 +85,19 @@ class stadiumpyMain(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
+        # ## Menu items
+        # stadiumpyMenu = tk.Menu(self)
+        # self.config(menu=stadiumpyMenu)
+
+        # #create File menu
+        # def reload_command():
+        #     pass
+
+        # fileMenu = tk.Menu(stadiumpyMenu)
+        # stadiumpyMenu.add_cascade(label="File", menu=fileMenu)
+        # fileMenu.add_command(label="Reload Defaults", command=reload_command)
+        # fileMenu.add_command(label="Exit", command=self._quit)
+
 
         self.frames = {}
         
@@ -225,26 +238,26 @@ class StartPage(tk.Frame):
 
         if inp['mode']=="Automated":
             stad_mode = "Automated"
-            button_options = button_options_green
+            button_options = button_options_green_mode
             # stepwiseBtnState = "disabled"
             button_stepwise['state'] = "disabled"
         else:
             stad_mode = "Stepwise"
-            button_options = button_options_red
+            button_options = button_options_red_mode
             # stepwiseBtnState = "normal"
             button_stepwise['state'] = "normal"
-
+            
         def toggle_mode(button_mode):
             if button_mode['text'] == 'Automated':
-                dictAdd = {'text':'Stepwise', 'bg':'#E69A8D', 'fg': '#5F4B8B'}
+                dictAdd = {'text':'Stepwise', 'bg':'orangered', 'fg': '#5F4B8B'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
-                button_stepwise['state'] = "normal"
+                stepwiseBtnState = "disabled"
             else:
-                dictAdd = {'text':'Automated', 'bg':'#ADEFD1', 'fg': '#00203F'}
+                dictAdd = {'text':'Automated', 'bg':'teal', 'fg': '#00203F'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
-                button_stepwise['state'] = "disabled"
+                stepwiseBtnState = "normal"
 
         button_mode = Button(self, text=stad_mode, command=lambda: toggle_mode(button_mode), **button_options)
 

@@ -15,12 +15,18 @@ button_options_green = {
             "borderless":1,
             'activebackground':('#AE0E36', '#D32E5E')
             }
-# button_options_nav = {
-#             "bg":'#e67e22', 
-#             "fg":'#00203F', 
-#             "borderless":1,
-#             'activebackground':('#AE0E36', '#D32E5E')
-#             }
+button_options_red_mode = {'bg':'orangered', 
+                "fg":'#5F4B8B', 
+                "borderless":1,
+                'activebackground':('#AE0E36', '#D32E5E')
+                }
+button_options_green_mode = {
+            "bg":'teal', 
+            "fg":'#00203F', 
+            "borderless":1,
+            'activebackground':('#AE0E36', '#D32E5E')
+            }
+
 button_options_back = {
             "bg":'#3598dc', 
             "fg":'#00203F', 

@@ -7,8 +7,8 @@ fresh_start: 0 #1 to delete the previous computations
 summary_file: summary_file.txt
 
 makeRF: 1
-makeSRF: 1
-makeSKS: 1
+makeSRF: 0
+makeSKS: 0
 
 ##  Define the geographical region
 mnlong: 119 #minimum longitude
