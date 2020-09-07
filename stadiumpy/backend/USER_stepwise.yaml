@@ -1,0 +1,20 @@
+data_settings:
+  channel: BHZ,BHE,BHN
+  client: IRIS
+  locations: '00'
+  network: TA
+  station: 220A*
+plot_settings:
+  plot_all_retrieved_events_stations: 1
+  plot_events: 1
+  plot_stations: 1
+rf_stepwise:
+  compute_plot_RF: 1
+  download_data_RF: 1
+  obtain_inventory_RF: 1
+  plot_ppoints: 1
+srf_stepwise:
+  compute_plot_SRF: 1
+  download_data_SRF: 1
+  obtain_inventory_SRF: 1
+  plot_Sppoints: 1

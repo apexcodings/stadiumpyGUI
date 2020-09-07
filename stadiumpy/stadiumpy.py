@@ -3,7 +3,7 @@ Wrapper for the stadiumpy GUI
 """
 import tkinter as tk
 from tkinter import ttk
-# from tkinter import filedialog, Text
+from tkinter import filedialog
 import yaml, os
 from tkinter import Tk, RIGHT, BOTH, RAISED, X, LEFT, W, E, NW, N, S, SUNKEN, Y, VERTICAL, RIDGE, GROOVE
 from tkinter.ttk import Frame, Style
@@ -42,6 +42,7 @@ stepwise_yaml = os.path.join(stdpy.__path__[0], 'backend', 'stepwise.yaml')
 USER_adv_prf_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_advRFparam.yaml')
 USER_inp_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_input_file.yaml')
 USER_direc_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_directories_names.yaml')
+USER_stepwise_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_stepwise.yaml')
 
 
 with open(inp_file_yaml) as f:
@@ -61,6 +62,7 @@ with open(direc_yaml) as f:
 
 with open(stepwise_yaml) as f:
     stepwiseDict = yaml.load(f, Loader=yaml.FullLoader)
+
 
 class stadiumpyMain(tk.Tk):
 
@@ -133,6 +135,22 @@ class stadiumpyMain(tk.Tk):
             inpYML = open(USER_inp_yaml, "w")
             yaml.dump(inpFile_dict,inpYML)
             inpYML.close()
+
+            ## write stepwise and data setting inputs from GUI
+            stepwise_dict = {}
+            stepwise_dict1 = self.frames[StepWise].getOutput1()            
+            stepwise_dict2 = self.frames[StepWise].getOutput2()            
+            stepwise_dict3 = self.frames[StepWise].getOutput3()            
+            stepwise_dict['plot_settings'] = stepwise_dict1    
+            stepwise_dict['rf_stepwise'] = stepwise_dict2   
+            stepwise_dict['srf_stepwise'] = stepwise_dict3    
+
+            datasettings_dict = self.frames[DataSettings].getOutput()   
+            stepwise_dict['data_settings'] = datasettings_dict    
+            
+            stepwiseYML = open(USER_stepwise_yaml, "w")
+            yaml.dump(stepwise_dict,stepwiseYML)
+            stepwiseYML.close()
 
             ## write directories from GUI
             direc_user_prf_dict = self.frames[PRFdirectoryStructure].getOutput()
@@ -249,12 +267,12 @@ class StartPage(tk.Frame):
 
         def toggle_mode(button_mode):
             if button_mode['text'] == 'Automated':
-                dictAdd = {'text':'Stepwise', 'bg':'#f5c242', 'fg': '#5F4B8B'}
+                dictAdd = {'text':'Stepwise', 'bg':'#4287f5', 'fg': '#5F4B8B'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
                 button_stepwise['state'] = "normal"
             else:
-                dictAdd = {'text':'Automated', 'bg':'#4287f5', 'fg': '#00203F'}
+                dictAdd = {'text':'Automated', 'bg':'#00FF00', 'fg': '#00203F'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
                 button_stepwise['state'] = "disabled"
@@ -317,21 +335,6 @@ class StartPage(tk.Frame):
         lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
         lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['fresh_start']) #binding it and assigning a text to it
 
-        ## Project Dir
-        RELY += RELHEIGHT+0.01 
-        lbl1 = ttk.Label(self, text="ProjectLocation:")
-        lbl1.configure(anchor="center")
-        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-
-        ## hover description
-        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
-        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['project_dir_loc']) #binding it and assigning a text to it
-
-
-        entry1 = ttk.Entry(self)
-        entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
-        entry1.insert(0,inp['project_dir_loc'])
-        self.outputDict['project_dir_loc'] = entry1
 
         ## Project name
         lbl1 = ttk.Label(self, text="ProjectName:")
@@ -366,6 +369,51 @@ class StartPage(tk.Frame):
         entry1.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
         entry1.insert(0,inp['summary_file'])
         self.outputDict['summary_file'] = entry1
+
+        ## Project Dir
+        def browse_button(folder_path):
+            # Allow user to select a directory and store it in global var
+            # called folder_path
+            # global folder_path
+            filename = filedialog.askdirectory()
+            folder_path.set(filename)
+            print(filename)
+            # buttonBrowse['text'] = filename
+            # buttonBrowse['font'] = ('calibri', 8)
+            # self.outputDict['project_dir_loc'] = filename
+            entry1_projloc.delete(0,tk.END)
+            entry1_projloc.insert(0,filename)
+            
+            
+
+        RELY += 2*(RELHEIGHT+0.01)
+        lbl1 = ttk.Label(self, text="ProjectLocation:")
+        lbl1.configure(anchor="center")
+        lbl1.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        # print(RELY)
+
+        ## hover description
+        lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+        lbl1_tooltip.bind(lbl1,stdpydesc['inputfile']['project_dir_loc']) #binding it and assigning a text to it
+
+
+        folder_path = tk.StringVar()
+        # buttonBrowse = tk.Button(text="Browse", command=lambda: browse_button(folder_path))
+        # buttonBrowse.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        buttonBrowse = Button(self, 
+                text="Browse",
+                command=lambda: browse_button(folder_path),
+                **button_options_browse
+                )
+
+        buttonBrowse.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+
+
+        RELYbrowse = RELY0+7*RELHEIGHT+0.01
+        entry1_projloc = ttk.Entry(self)
+        entry1_projloc.place(relx=RELXS[0]+drelx, rely=RELYbrowse, relheight=RELHEIGHT, relwidth=2*RELWIDTH-drelx)
+        entry1_projloc.insert(0,inp['project_dir_loc'])
+        self.outputDict['project_dir_loc'] = entry1_projloc
 
 
 
@@ -1935,6 +1983,7 @@ class StepWise(tk.Frame):
                     )
             button_stepwisePlot_vals1.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
             self.outputDict[stepwisePlot_vars[kk]] = get_toggle_output(button_stepwisePlot_vals1)
+            # print(self.outputDict[stepwisePlot_vars[kk]])
 
             
 
@@ -1956,7 +2005,7 @@ class StepWise(tk.Frame):
                         )
                 button_stepwisePlot_vals2.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
                 self.outputDict[stepwisePlot_vars[kk]] = get_toggle_output(button_stepwisePlot_vals2)
-
+                # print(self.outputDict[stepwisePlot_vars[kk]])
                 
 
             if kk+1<len(stepwisePlot_vars):
@@ -1976,7 +2025,7 @@ class StepWise(tk.Frame):
                         )
                 button_stepwisePlot_vals3.place(relx=RELXStemp[2]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
                 self.outputDict[stepwisePlot_vars[kk]] = get_toggle_output(button_stepwisePlot_vals3)
-
+                # print(self.outputDict[stepwisePlot_vars[kk]])
             kk+=1
         
         #######
@@ -2011,7 +2060,7 @@ class StepWise(tk.Frame):
                 )
         button_stepwisePRF_vals1.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
         self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals1)
-
+        # print(self.outputDict2[stepwisePRF_vars[kk]])
         
 
         ##
@@ -2032,7 +2081,7 @@ class StepWise(tk.Frame):
                     )
             button_stepwisePRF_vals2.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
             self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals2)
-
+            # print(self.outputDict2[stepwisePRF_vars[kk]])
             
 
         if kk+1<len(stepwisePRF_vars):
@@ -2052,7 +2101,7 @@ class StepWise(tk.Frame):
                     )
             button_stepwisePRF_vals3.place(relx=RELXStemp[2]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
             self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals3)
-
+            # print(self.outputDict2[stepwisePRF_vars[kk]])
 
         if kk+1<len(stepwisePRF_vars):
             RELY += RELHEIGHT+0.01 
@@ -2073,7 +2122,7 @@ class StepWise(tk.Frame):
                     )
             button_stepwisePRF_vals4.place(relx=RELXStemp[0]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
             self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals4)
-
+            # print(self.outputDict2[stepwisePRF_vars[kk]])
         if kk+1<len(stepwisePRF_vars):
             kk+=1
             lbl1 = ttk.Label(self, text=stepwisePRF_vars[kk]+":", **label_options)
@@ -2091,7 +2140,7 @@ class StepWise(tk.Frame):
                     )
             button_stepwisePRF_vals5.place(relx=RELXStemp[1]+RELWIDTHtemp1+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
             self.outputDict2[stepwisePRF_vars[kk]] = get_toggle_output(button_stepwisePRF_vals5)
-
+            # print(self.outputDict2[stepwisePRF_vars[kk]])
 
             # kk+=1
         
@@ -2215,19 +2264,20 @@ class StepWise(tk.Frame):
     def getOutput1(self):
         outputResult = {}
         for key, value in self.outputDict.items():
-            outputResult[key] = value.get()
+            outputResult[key] = value
+
         return outputResult
 
     def getOutput2(self):
         outputResult = {}
         for key, value in self.outputDict2.items():
-            outputResult[key] = value.get()
+            outputResult[key] = value
         return outputResult
 
     def getOutput3(self):
         outputResult = {}
         for key, value in self.outputDict3.items():
-            outputResult[key] = value.get()
+            outputResult[key] = value
         return outputResult
 ##############################################################################################
 class DataSettings(tk.Frame):
@@ -2257,12 +2307,130 @@ class DataSettings(tk.Frame):
 
         button_mode.place(relx=RELXS[0], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH/2-drelx)
 
-    
-    # def getOutput(self):
-    #     outputResult = {}
-    #     for key, value in self.outputDict.items():
-    #         outputResult[key] = value.get()
-    #     return outputResult
+        
+        dataSettings_vars = list(stepwiseDict['data_settings'].keys())
+        dataSettings_vals = list(stepwiseDict['data_settings'].values())
+
+
+        RELWIDTHtemp1 = 0.25
+        RELWIDTHtemp2 = 0.2
+        RELWIDTHtemp3 = 0.05
+        RELXStemp = np.linspace(0,1,3)
+        kk=0
+        self.outputDict = {}
+        
+        def show_other_option(client, RELY_kk0):
+            lbl1 = ttk.Label(self, text=client, **label_options)
+            lbl1.configure(anchor="center")
+            lbl1.place(relx=RELXStemp[1]+RELWIDTHtemp3, rely=RELY_kk0, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+        
+        while kk<len(dataSettings_vars):
+            RELY += RELHEIGHT+0.01 
+            lbl1 = ttk.Label(self, text=dataSettings_vars[kk]+":", **label_options)
+            lbl1.place(relx=RELXStemp[0]+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp1)
+
+            ## hover description
+            lbl1_tooltip = Pmw.Balloon(self) #Calling the tooltip
+            lbl1_tooltip.bind(lbl1,stdpydesc['stepwise'][dataSettings_vars[kk]]) #binding it and assigning a text to it
+            
+
+            if kk == 0:
+                RELY_kk0 = RELY
+                clientSel0 = tk.StringVar()
+                clientOptions0 = ['All Available (*)','IRIS']
+                clientSel0.set(clientOptions0[1])
+                topo_drop = tk.OptionMenu(self,clientSel0, *clientOptions0)
+                topo_drop.place(relx=RELXStemp[0]+RELWIDTHtemp2+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+   
+                def change_dropdown0(*args):
+                    print("Client is : ",clientSel0.get())
+                    show_other_option(clientSel0.get(), RELY_kk0)
+                show_other_option(clientSel0.get(), RELY_kk0)
+
+                # link function to change dropdown
+                clientSel0.trace('w', change_dropdown0)
+                self.outputDict[dataSettings_vars[kk]] = clientSel0.get()
+            elif kk == 1:
+                RELY_kk1 = RELY
+                clientSel1 = tk.StringVar()
+                clientOptions = ['All Available (*)','TA']
+                clientSel1.set(clientOptions[1])
+                topo_drop = tk.OptionMenu(self,clientSel1, *clientOptions)
+                topo_drop.place(relx=RELXStemp[0]+RELWIDTHtemp2+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+          
+                show_other_option(clientSel1.get(),RELY_kk1)
+   
+                def change_dropdown1(*args):
+                    print("Client is : ",clientSel1.get())
+                    show_other_option(clientSel1.get(),RELY_kk1)
+
+                # link function to change dropdown
+                clientSel1.trace('w', change_dropdown1)
+                self.outputDict[dataSettings_vars[kk]] = clientSel1.get()
+            elif kk == 2:
+                RELY_kk2 = RELY
+                clientSel2 = tk.StringVar()
+                clientOptions = ['All Available (*)','220A*']
+                clientSel2.set(clientOptions[1])
+                topo_drop = tk.OptionMenu(self,clientSel2, *clientOptions)
+                topo_drop.place(relx=RELXStemp[0]+RELWIDTHtemp2+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+          
+                show_other_option(clientSel2.get(),RELY_kk2)
+   
+                def change_dropdown1(*args):
+                    print("Client is : ",clientSel2.get())
+                    show_other_option(clientSel2.get(),RELY_kk2)
+
+                # link function to change dropdown
+                clientSel2.trace('w', change_dropdown1)
+                self.outputDict[dataSettings_vars[kk]] = clientSel2.get()
+            elif kk == 3:
+                RELY_kk3 = RELY
+                clientSel3 = tk.StringVar()
+                clientOptions = ['BHZ,BHE,BHN']
+                clientSel3.set(clientOptions[0])
+                topo_drop = tk.OptionMenu(self,clientSel3, *clientOptions)
+                topo_drop.place(relx=RELXStemp[0]+RELWIDTHtemp2+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+          
+                show_other_option(clientSel3.get(),RELY_kk3)
+   
+                def change_dropdown1(*args):
+                    print("Client is : ",clientSel3.get())
+                    show_other_option(clientSel3.get(),RELY_kk3)
+
+                # link function to change dropdown
+                clientSel3.trace('w', change_dropdown1)
+                self.outputDict[dataSettings_vars[kk]] = clientSel3.get()
+            elif kk == 4:
+                RELY_kk4 = RELY
+                clientSel4 = tk.StringVar()
+                clientOptions = ['""','00']
+                clientSel4.set(clientOptions[1])
+                topo_drop = tk.OptionMenu(self,clientSel4, *clientOptions)
+                topo_drop.place(relx=RELXStemp[0]+RELWIDTHtemp2+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+          
+                show_other_option(clientSel4.get(),RELY_kk4)
+   
+                def change_dropdown1(*args):
+                    print("Client is : ",clientSel4.get())
+                    show_other_option(clientSel4.get(),RELY_kk4)
+
+                # link function to change dropdown
+                clientSel4.trace('w', change_dropdown1)
+                self.outputDict[dataSettings_vars[kk]] = clientSel4.get()
+            else:
+                entry1 = ttk.Entry(self)
+                entry1.place(relx=RELXStemp[0]+RELWIDTHtemp2+RELWIDTHtemp3, rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTHtemp2)
+                entry1.insert(0,dataSettings_vals[kk])
+                self.outputDict[dataSettings_vars[kk]] = entry1
+
+            kk+=1
+
+    def getOutput(self):
+        outputResult = {}
+        for key, value in self.outputDict.items():
+            outputResult[key] = value
+        return outputResult
 ##############################################################################################
 
 

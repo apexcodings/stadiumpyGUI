@@ -1,12 +1,12 @@
 fresh_start: 0
 makeRF: 1
-makeSKS: 1
+makeSKS: 0
 makeSRF: 1
 mnlat: 20
 mnlong: 119
 mode: 1
 mxlat: 26
 mxlong: 125
-project_dir_loc: ~/Downloads/
+project_dir_loc: ~/Desktop/
 project_name: Simple_RFSKS_test/
 summary_file: summary_file.txt
