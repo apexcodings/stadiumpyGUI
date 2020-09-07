@@ -15,13 +15,13 @@ button_options_green = {
             "borderless":1,
             'activebackground':('#AE0E36', '#D32E5E')
             }
-button_options_red_mode = {'bg':'orangered', 
+button_options_red_mode = {'bg':'#f5c242', 
                 "fg":'#5F4B8B', 
                 "borderless":1,
                 'activebackground':('#AE0E36', '#D32E5E')
                 }
 button_options_green_mode = {
-            "bg":'teal', 
+            "bg":'#4287f5', 
             "fg":'#00203F', 
             "borderless":1,
             'activebackground':('#AE0E36', '#D32E5E')

@@ -246,18 +246,18 @@ class StartPage(tk.Frame):
             button_options = button_options_red_mode
             # stepwiseBtnState = "normal"
             button_stepwise['state'] = "normal"
-            
+
         def toggle_mode(button_mode):
             if button_mode['text'] == 'Automated':
-                dictAdd = {'text':'Stepwise', 'bg':'orangered', 'fg': '#5F4B8B'}
+                dictAdd = {'text':'Stepwise', 'bg':'#f5c242', 'fg': '#5F4B8B'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
-                stepwiseBtnState = "disabled"
+                button_stepwise['state'] = "normal"
             else:
-                dictAdd = {'text':'Automated', 'bg':'teal', 'fg': '#00203F'}
+                dictAdd = {'text':'Automated', 'bg':'#4287f5', 'fg': '#00203F'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
-                stepwiseBtnState = "normal"
+                button_stepwise['state'] = "disabled"
 
         button_mode = Button(self, text=stad_mode, command=lambda: toggle_mode(button_mode), **button_options)
 
