@@ -5,7 +5,7 @@ from stadiumpy.font_properties import *
 import platform
 
 button_options_red = {'bg':'#E69A8D', 
-                "fg":'#5F4B8B', 
+                "fg":'#FFFFFF', 
                 "borderless":1,
                 'activebackground':('#AE0E36', '#D32E5E')
                 }
@@ -16,15 +16,17 @@ button_options_green = {
             'activebackground':('#AE0E36', '#D32E5E')
             }
 button_options_red_mode = {'bg':'#f5c242', 
-                "fg":'#5F4B8B', 
+                "fg":'#00203F', 
                 "borderless":1,
-                'activebackground':('#AE0E36', '#D32E5E')
+                'activebackground':('#AE0E36', '#D32E5E'),
+                "font":('calibri', 16, 'bold')
                 }
 button_options_green_mode = {
             "bg":'#00FF00', 
             "fg":'#00203F', 
             "borderless":1,
-            'activebackground':('#AE0E36', '#D32E5E')
+            'activebackground':('#AE0E36', '#D32E5E'),
+            "font":('calibri', 16, 'bold')
             }
 button_options_browse = {
             "bg":'#4287f5', 

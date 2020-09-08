@@ -25,6 +25,7 @@ import ast
 from stadiumpy.backend import stadiumpyBackend
 
 
+
 cachedirec=".cache"
 if not os.path.exists(cachedirec):
     os.makedirs(cachedirec, exist_ok=True)
@@ -37,6 +38,7 @@ adv_prf_yaml = os.path.join(stdpy.__path__[0], 'backend', 'advRFparam.yaml')
 descrip_yaml = os.path.join(stdpy.__path__[0], 'backend', 'description.yaml')
 direc_yaml = os.path.join(stdpy.__path__[0], 'backend', 'directories_names.yaml')
 stepwise_yaml = os.path.join(stdpy.__path__[0], 'backend', 'stepwise.yaml')
+dirStrHTML = os.path.join(stdpy.__path__[0], 'output.html')
 
 ## User defined
 USER_adv_prf_yaml = os.path.join(stdpy.__path__[0], 'backend', 'USER_advRFparam.yaml')
@@ -224,22 +226,7 @@ class StartPage(tk.Frame):
         main_frame = tk.Frame(self)
         main_frame.pack(fill=BOTH, expand=1)
 
-        second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
-        second_frame.pack(pady=20,side=LEFT, fill=BOTH, expand=1, anchor="nw")
-
-
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
-
-        topcanvas = tk.Canvas(self)
-        topcanvas.config(bg='#ecebec')
-        topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=0)
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=0)
 
         self.outputDict = {}
         ## Mode
@@ -267,12 +254,16 @@ class StartPage(tk.Frame):
 
         def toggle_mode(button_mode):
             if button_mode['text'] == 'Automated':
-                dictAdd = {'text':'Stepwise', 'bg':'#4287f5', 'fg': '#5F4B8B'}
+                dictAdd = {'text':'Stepwise'}
+                dictAdd = {**dictAdd, **button_options_red_mode}
+                # dictAdd = {'text':'Stepwise', 'bg':'#4287f5', 'fg': '#FFFFFF'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
                 button_stepwise['state'] = "normal"
             else:
-                dictAdd = {'text':'Automated', 'bg':'#00FF00', 'fg': '#00203F'}
+                dictAdd = {'text':'Automated'}
+                dictAdd = {**dictAdd, **button_options_green_mode}
+                # dictAdd = {'text':'Automated', 'bg':'#00FF00', 'fg': '#00203F'}
                 for key, value in dictAdd.items():
                     button_mode[key]=value
                 button_stepwise['state'] = "disabled"
@@ -374,13 +365,9 @@ class StartPage(tk.Frame):
         def browse_button(folder_path):
             # Allow user to select a directory and store it in global var
             # called folder_path
-            # global folder_path
             filename = filedialog.askdirectory()
             folder_path.set(filename)
-            print(filename)
-            # buttonBrowse['text'] = filename
-            # buttonBrowse['font'] = ('calibri', 8)
-            # self.outputDict['project_dir_loc'] = filename
+            # print(filename)
             entry1_projloc.delete(0,tk.END)
             entry1_projloc.insert(0,filename)
             
@@ -398,8 +385,6 @@ class StartPage(tk.Frame):
 
 
         folder_path = tk.StringVar()
-        # buttonBrowse = tk.Button(text="Browse", command=lambda: browse_button(folder_path))
-        # buttonBrowse.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
         buttonBrowse = Button(self, 
                 text="Browse",
                 command=lambda: browse_button(folder_path),
@@ -409,9 +394,9 @@ class StartPage(tk.Frame):
         buttonBrowse.place(relx=RELXS[1], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
 
 
-        RELYbrowse = RELY0+7*RELHEIGHT+0.01
+        RELY = RELY+RELHEIGHT+0.01
         entry1_projloc = ttk.Entry(self)
-        entry1_projloc.place(relx=RELXS[0]+drelx, rely=RELYbrowse, relheight=RELHEIGHT, relwidth=2*RELWIDTH-drelx)
+        entry1_projloc.place(relx=RELXS[0]+drelx, rely=RELY, relheight=RELHEIGHT, relwidth=2*RELWIDTH-drelx)
         entry1_projloc.insert(0,inp['project_dir_loc'])
         self.outputDict['project_dir_loc'] = entry1_projloc
 
@@ -602,16 +587,10 @@ class PageRF(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
+        
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
+        
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "Go to S-RF"
         button_options = button_options_nav 
         fontDict = {"font":('calibri', 16, 'bold')}
@@ -724,15 +703,9 @@ class PageSRF(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
-        halfCellX = (RELXS[2]-RELXS[1])/2
 
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
 
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "Go to P-RF"
         button_options = button_options_nav 
         fontDict = {"font":('calibri', 16, 'bold')}
@@ -766,27 +739,16 @@ class PageDataEnquiry(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=1)
+        
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=1)
 ##############################################################################################
 class PageSKS(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=3)
+        
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=3)
 ##############################################################################################
 class PageGeoRegion(tk.Frame):
 
@@ -800,18 +762,8 @@ class PageGeoRegion(tk.Frame):
         # second_frame = SFrame(main_frame, scrollbarwidth=10,height=600, mousewheel=True)
         second_frame.pack(pady=20,side=LEFT, fill=BOTH, expand=1, anchor="nw")
 
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=0)
 
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
-
-        topcanvas = tk.Canvas(self)
-        topcanvas.config(bg='#ecebec')
-        topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=None)
 
 
 
@@ -979,14 +931,8 @@ class ProjectDir(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=4)
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=4)
         
         button_options = button_options_nav 
         fontDict = {"font":('calibri', 16, 'bold')}
@@ -1048,14 +994,10 @@ class PRF_filenames(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
-        halfCellX = (RELXS[2]-RELXS[1])/2
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
 
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
+
+        halfCellX = (RELXS[2]-RELXS[1])/2
         stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
@@ -1141,15 +1083,10 @@ class PRF_hkappa(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
+
+
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
@@ -1257,17 +1194,9 @@ class PRF_profileconfig(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
         halfCellX = (RELXS[2]-RELXS[1])/2
 
-        # topcanvas = tk.Canvas(self)
-        # topcanvas.config(bg='#ecebec')
-        # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
@@ -1363,18 +1292,10 @@ class PRF_eventsSearch(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
+
+
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-        # topcanvas = tk.Canvas(self)
-        # topcanvas.config(bg='#ecebec')
-        # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
@@ -1460,18 +1381,10 @@ class PRF_filter(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
+
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
         halfCellX = (RELXS[2]-RELXS[1])/2
 
-        # topcanvas = tk.Canvas(self)
-        # topcanvas.config(bg='#ecebec')
-        # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
@@ -1551,18 +1464,9 @@ class PRF_display(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # RELXS[1:]= RELXS[1:]+drelx
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=2)
         halfCellX = (RELXS[2]-RELXS[1])/2
 
-        # topcanvas = tk.Canvas(self)
-        # topcanvas.config(bg='#ecebec')
-        # topcanvas.place(relx=RELXS[0], rely=RELY, relwidth = 5*RELWIDTH, relheight=8*RELHEIGHT )
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=2)
         stad_mode = "<<"
         button_options = button_options_back 
         fontDict = {"font":('calibri', 12, 'bold')}
@@ -1727,14 +1631,10 @@ class PRFdirectoryStructure(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=4)
+
+
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=4)
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text="P-RF  Directory Structure", **labHeadOptions)
         lbl1.configure(anchor="center")
@@ -1803,14 +1703,10 @@ class SRFdirectoryStructure(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=4)
+
+
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=4)
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text="S-RF Directory Structure", **labHeadOptions)
         lbl1.configure(anchor="center")
@@ -1879,14 +1775,11 @@ class ProjectTreeStructure(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
+
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=4)
+
+
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=1)
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text="Project Directory Visualization", **labHeadOptions)
         lbl1.configure(anchor="center")
@@ -1909,7 +1802,8 @@ class ProjectTreeStructure(tk.Frame):
 
         scrollbar = tk.Scrollbar(self, orient="vertical")
         scrollbar.config(command=listNodes.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar.place(relx=RELXS[1]-halfCellX+4*RELWIDTH, rely=RELY, relheight=15*RELHEIGHT, relwidth=0.1*RELWIDTH)
+        # scrollbar.pack(side="right", fill="y")
 
         listNodes.config(yscrollcommand=scrollbar.set)
         if os.path.exists(USER_inp_yaml):
@@ -1919,22 +1813,17 @@ class ProjectTreeStructure(tk.Frame):
 
         outputDirStructureList = list_files("./")
         for x in outputDirStructureList:
-            listNodes.insert(tk.END, x)   
+            listNodes.insert(tk.END, x)         
 ##############################################################################################
 class StepWise(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
-        # halfCellX = (RELXS[2]-RELXS[1])/2
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=None)
+
+
         halfCellX = RELWIDTH/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=None)
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text="StepWise Settings", **labHeadOptions)
         lbl1.configure(anchor="center")
@@ -2285,14 +2174,10 @@ class DataSettings(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         pageArgs = pageArgsOut()
-        RELY = 0
-        RELHEIGHT, RELWIDTH = 0.05, 0.2
-        RELXS = np.linspace(0,1,6)
-        drelx = 0.01
+        RELXS, RELY, RELHEIGHT, RELWIDTH, drelx = display_main_buttons(self, controller, *pageArgs, disabledBtn=None)
+
+
         halfCellX = (RELXS[2]-RELXS[1])/2
-
-
-        display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=None)
         RELY += RELHEIGHT+0.01 
         lbl1 = ttk.Label(self, text="Data Settings", **labHeadOptions)
         lbl1.configure(anchor="center")

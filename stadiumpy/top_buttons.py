@@ -1,11 +1,16 @@
 """
 Setting the primary top button of the GUI
 """
+import numpy as np
 
 from stadiumpy.widgets import SFrame, Button
 from stadiumpy.styles import topbuttons_options, topbuttons_options_selected
 
-def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *pageArgs, disabledBtn=0):
+def display_main_buttons(self,controller, *pageArgs, disabledBtn=0):
+    RELY = 0
+    RELHEIGHT, RELWIDTH = 0.05, 0.2
+    RELXS = np.linspace(0,1,6)
+    drelx = 0.01
     
     ## Startpage page
     stpg_button = Button(self, text="Home",
@@ -36,3 +41,5 @@ def display_main_buttons(self,controller,RELXS, RELY, RELHEIGHT, RELWIDTH, *page
         else:
             buttons[i].configure(**topbuttons_options)
         buttons[i].place(relx=RELXS[i], rely=RELY, relheight=RELHEIGHT, relwidth=RELWIDTH)
+        
+    return RELXS, RELY, RELHEIGHT, RELWIDTH, drelx
